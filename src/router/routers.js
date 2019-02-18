@@ -135,7 +135,7 @@ export default [
     meta: {
       hideInBread: true
     },
-    component: Main, 
+    component: Main,
     children: [
       {
         path: 'record_page',

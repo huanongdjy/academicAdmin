@@ -1,7 +1,7 @@
 import {
   login,
   logout,
-  getUserInfo,
+  // getUserInfo,
   getMessage,
   getContentByMsgId,
   hasRead,
@@ -74,15 +74,25 @@ export default {
   },
   actions: {
     // 登录
-    handleLogin ({ commit }, { userName, password }) {
-      userName = userName.trim()
+    handleLogin ({ commit }, { username, password, identity }) {
+      username = username.trim()
       return new Promise((resolve, reject) => {
         login({
-          userName,
-          password
+          username,
+          password,
+          identity
         }).then(res => {
-          const data = res.data
-          commit('setToken', data.token)
+          // const data = res.data
+          // console.log(data)
+          // commit('setToken', data.token)
+          const data = res.data.user
+          console.log(data)
+          // commit('setAvator', data.avator)
+          commit('setUserName', data.username)
+          commit('setUserId', data.userid)
+          commit('setAccess', ['super_admin', 'admin'])
+          commit('setHasGetInfo', true)
+          resolve(res)
           resolve()
         }).catch(err => {
           reject(err)
@@ -106,25 +116,25 @@ export default {
       })
     },
     // 获取用户相关信息
-    getUserInfo ({ state, commit }) {
-      return new Promise((resolve, reject) => {
-        try {
-          getUserInfo(state.token).then(res => {
-            const data = res.data
-            commit('setAvator', data.avator)
-            commit('setUserName', data.name)
-            commit('setUserId', data.user_id)
-            commit('setAccess', data.access)
-            commit('setHasGetInfo', true)
-            resolve(data)
-          }).catch(err => {
-            reject(err)
-          })
-        } catch (error) {
-          reject(error)
-        }
-      })
-    },
+    // getUserInfo ({ state, commit }, { user }) {
+    //   // return new Promise((resolve, reject) => {
+    //   try {
+    //     // getUserInfo(state.token).then(res => {
+    //     const data = user
+    //     // commit('setAvator', data.avator)
+    //     commit('setUserName', data.username)
+    //     commit('setUserId', data.userid)
+    //     // commit('setAccess', data.access)
+    //     commit('setHasGetInfo', true)
+    //     resolve(data)
+    //     // }).catch(err => {
+    //     //   reject(err)
+    //     // })
+    //   } catch (error) {
+    //     reject(error)
+    //   }
+    //   // })
+    // },
     // 此方法用来获取未读消息条数，接口只返回数值，不返回消息列表
     getUnreadMessageCount ({ state, commit }) {
       getUnreadCount().then(res => {

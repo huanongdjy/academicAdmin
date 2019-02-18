@@ -1,6 +1,9 @@
 import axios from 'axios'
 import store from '@/store'
 // import { Spin } from 'iview'
+
+axios.defaults.headers.post['Content-Type'] = 'application/json;charset=UTF-8'
+
 const addErrorLog = errorInfo => {
   const { statusText, status, request: { responseURL } } = errorInfo
   let info = {
@@ -21,7 +24,10 @@ class HttpRequest {
     const config = {
       baseURL: this.baseUrl,
       headers: {
-        //
+        'Content-Type': 'application/json;charset=UTF-8'
+        // 'Content-Type': 'application/x-www-form-urlencoded'
+        // 'REQ-TYPE': 'API'
+        // 'Authorization': 'Bearer'
       }
     }
     return config
@@ -34,16 +40,16 @@ class HttpRequest {
   }
   interceptors (instance, url) {
     // 请求拦截
-    instance.interceptors.request.use(config => {
-      // 添加全局的loading...
-      if (!Object.keys(this.queue).length) {
-        // Spin.show() // 不建议开启，因为界面不友好
-      }
-      this.queue[url] = true
-      return config
-    }, error => {
-      return Promise.reject(error)
-    })
+    // instance.interceptors.request.use(config => {
+    //   // 添加全局的loading...
+    //   if (!Object.keys(this.queue).length) {
+    //     // Spin.show() // 不建议开启，因为界面不友好
+    //   }
+    //   this.queue[url] = true
+    //   return config
+    // }, error => {
+    //   return Promise.reject(error)
+    // })
     // 响应拦截
     instance.interceptors.response.use(res => {
       this.destroy(url)

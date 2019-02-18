@@ -1,19 +1,25 @@
 <template>
   <Form ref="loginForm" :model="form" :rules="rules" @keydown.enter.native="handleSubmit">
     <Form-Item prop="userName">
-      <Input v-model="form.userName" placeholder="请输入用户名">
+      <Input v-model="form.username" placeholder="请输入用户名">
         <span slot="prepend">
           <Icon :size="16" type="ios-person"></Icon>
         </span>
       </Input>
     </Form-Item>
     <Form-Item prop="password">
-      <input type="password" v-model="form.password" placeholder="请输入密码">
+      <Input type="password" v-model="form.password" placeholder="请输入密码">
         <span slot="prepend">
           <Icon :size="14" type="md-lock"></Icon>
         </span>
-      </input>
+      </Input>
     </Form-Item>
+     <Form-item prop="gender">
+      <Radio-group v-model="form.identity">
+        <Radio label="admin">管理员</Radio>
+        <Radio label="sysadmin">系统管理员</Radio>
+      </Radio-group>
+    </Form-item>
     <Form-Item>
       <Button @click="handleSubmit" type="primary" long>登录</Button>
     </Form-Item>
@@ -38,21 +44,31 @@ export default {
           { required: true, message: '密码不能为空', trigger: 'blur' }
         ]
       }
+    },
+    identityRules: {
+      type: Array,
+      default: () => {
+        return [
+          { required: true, message: '请选择身份', trigger: 'change' }
+        ]
+      }
     }
   },
   data () {
     return {
       form: {
-        userName: 'super_admin',
-        password: ''
+        username: '',
+        password: '',
+        identity: ''
       }
     }
   },
   computed: {
     rules () {
       return {
-        userName: this.userNameRules,
-        password: this.passwordRules
+        username: this.userNameRules,
+        password: this.passwordRules,
+        identity: this.identityRules
       }
     }
   },
@@ -61,8 +77,9 @@ export default {
       this.$refs.loginForm.validate((valid) => {
         if (valid) {
           this.$emit('on-success-valid', {
-            userName: this.form.userName,
-            password: this.form.password
+            username: this.form.username,
+            password: this.form.password,
+            identity: this.form.identity
           })
         }
       })

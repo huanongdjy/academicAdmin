@@ -1,26 +1,27 @@
-import axios from '@/libs/api.request'
+import axios from '@/libs/myaxios'
 
-export const login = ({ userName, password }) => {
+export const login = ({ username, password, identity }) => {
   const data = {
-    userName,
-    password
+    username,
+    password,
+    identity
   }
-  return axios.request({
-    url: 'login',
+  return axios({
+    url: '/login',
     data,
     method: 'post'
   })
 }
 
-export const getUserInfo = (token) => {
-  return axios.request({
-    url: 'get_info',
-    params: {
-      token
-    },
-    method: 'get'
-  })
-}
+// export const getUserInfo = (token) => {
+//   return axios.request({
+//     url: 'get_info',
+//     params: {
+//       token
+//     },
+//     method: 'get'
+//   })
+// }
 
 export const logout = (token) => {
   return axios.request({
