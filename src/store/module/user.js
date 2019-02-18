@@ -84,7 +84,7 @@ export default {
         }).then(res => {
           // const data = res.data
           // console.log(data)
-          // commit('setToken', data.token)
+          commit('setToken', res.data.token)
           const data = res.data.user
           console.log(data)
           // commit('setAvator', data.avator)
