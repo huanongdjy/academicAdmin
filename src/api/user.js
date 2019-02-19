@@ -13,15 +13,15 @@ export const login = ({ username, password, identity }) => {
   })
 }
 
-// export const getUserInfo = (token) => {
-//   return axios.request({
-//     url: 'get_info',
-//     params: {
-//       token
-//     },
-//     method: 'get'
-//   })
-// }
+export const getUserInfo = (token) => {
+  return axios({
+    url: '/getUserInfo',
+    data: {
+      token
+    },
+    method: 'post'
+  })
+}
 
 export const logout = (token) => {
   return axios.request({

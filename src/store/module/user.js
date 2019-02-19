@@ -1,7 +1,7 @@
 import {
   login,
   logout,
-  // getUserInfo,
+  getUserInfo,
   getMessage,
   getContentByMsgId,
   hasRead,
@@ -86,11 +86,11 @@ export default {
           // console.log(data)
           commit('setToken', res.data.token)
           const data = res.data.user
-          console.log(data)
+          console.log(data.identity.access)
           // commit('setAvator', data.avator)
           commit('setUserName', data.username)
-          commit('setUserId', data.userid)
-          commit('setAccess', ['super_admin', 'admin'])
+          commit('setUserId', data.userId)
+          commit('setAccess', [data.identity.access])
           commit('setHasGetInfo', true)
           resolve(res)
           resolve()
@@ -116,25 +116,27 @@ export default {
       })
     },
     // 获取用户相关信息
-    // getUserInfo ({ state, commit }, { user }) {
-    //   // return new Promise((resolve, reject) => {
-    //   try {
-    //     // getUserInfo(state.token).then(res => {
-    //     const data = user
-    //     // commit('setAvator', data.avator)
-    //     commit('setUserName', data.username)
-    //     commit('setUserId', data.userid)
-    //     // commit('setAccess', data.access)
-    //     commit('setHasGetInfo', true)
-    //     resolve(data)
-    //     // }).catch(err => {
-    //     //   reject(err)
-    //     // })
-    //   } catch (error) {
-    //     reject(error)
-    //   }
-    //   // })
-    // },
+    getUserInfo ({ state, commit }) {
+      return new Promise((resolve, reject) => {
+        try {
+          getUserInfo(state.token).then(res => {
+            const data = res.data.user
+            console.log(data.identity.access)
+            // commit('setAvator', data.avator)
+            commit('setUserName', data.username)
+            commit('setUserId', data.userId)
+            commit('setAccess', [data.access])
+            commit('setHasGetInfo', true)
+            resolve(data)
+          // })
+          }).catch(err => {
+            reject(err)
+          })
+        } catch (error) {
+          reject(error)
+        }
+      })
+    },
     // 此方法用来获取未读消息条数，接口只返回数值，不返回消息列表
     getUnreadMessageCount ({ state, commit }) {
       getUnreadCount().then(res => {
