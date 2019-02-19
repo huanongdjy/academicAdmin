@@ -65,7 +65,7 @@ export default [
           title: '用户管理',
           icon: 'ios-book'
         },
-        component: () => import('@/view/directive/directive.vue')
+        component: () => import('@/view/directive/myUserMananger')
       }
     ]
   },
