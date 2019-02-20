@@ -70,7 +70,7 @@ export default [
     ]
   },
   {
-    path: '',
+    path: '/achievementmanage',
     name: 'achievementmanage',
     meta: {
       hideInBread: true
@@ -82,10 +82,9 @@ export default [
         name: 'achievementmanage_page',
         meta: {
           title: '学术成果管理',
-          href: '',
           icon: 'ios-book'
         },
-        component: () => import('@/view/directive/directive.vue')
+        component: () => import('@/view/directive/myAchievementManager.vue')
       }
     ]
   },
