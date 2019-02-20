@@ -133,7 +133,7 @@ export default {
       tableColumns1: [
         {
           title: '用户名',
-          key: 'userName'
+          key: 'username'
         },
         {
           title: '角色',
@@ -211,7 +211,7 @@ export default {
     show (index) {
       this.modal = true
       let data = this.tableData1[index]
-      this.formCustom.username = data.userName
+      this.formCustom.username = data.username
       this.formCustom.identity = data.identity.identity_id
       this.formCustom.password = data.password
       this.formCustom.mailbox = data.mailbox
@@ -219,7 +219,7 @@ export default {
       this.tomethod = 'update'
     },
     remove (index) {
-      deleteUser(this.tableData1[index].userName).then(res => {
+      deleteUser(this.tableData1[index].username).then(res => {
         if (res.data.resultCode === 200) {
           this.$Message.info(res.data.message)
           // this.tableData1.splice(index, 1)

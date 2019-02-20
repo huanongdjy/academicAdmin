@@ -14,7 +14,7 @@
     <!-- <Row class="expand-row">
       <Col span="24"> -->
     <span class="expand-key">照片: </span>
-    <div class="demo-upload-list" v-for="item in defaultList" :key="item.name">
+    <div class="demo-upload-list" v-for="item in imageList" :key="item.name">
       <img :src="item.url">
       <div class="demo-upload-list-cover">
         <Icon type="ios-eye-outline" @click.native="handleView(item.url)"></Icon>
@@ -38,7 +38,7 @@
               <Icon type="ios-camera" size="20"></Icon>
           </div>
         </Upload> -->
-        <!-- <span class="expand-value">{{ row.photo }}</span>
+        <!-- <span class="expand-value">{{ row.photoList }}</span>
       </Col>
     </Row> -->
     <Modal title="View Image" v-model="visible">
@@ -53,7 +53,7 @@ export default {
   },
   data () {
     return {
-      defaultList: [
+      imageList: [
         {
           'name': 'a42bdcc1178e62b4694c830f028db5c0',
           'url': 'D:/微信图片_20190220163347.png'
