@@ -1,6 +1,6 @@
 <template>
   <div>
-    <Button type="primary" class="mybutton" @click="addAchievement">新增成果</Button>
+    <Button type="primary" class="mybutton" @click="add">新增成果</Button>
     <Table :columns="columns" :data="data1"></Table>
     <div style="margin: 10px;overflow: hidden">
       <div style="float: right;">
@@ -97,6 +97,96 @@
         </FormItem>
       </Form>
     </Modal>
+    <Modal title="新增成果" v-model="visibleAdd" @on-ok="ok" @on-cancel="cancel">
+      <Form :model="formAdd" :label-width="80">
+        <FormItem label="成果名称">
+          <Input v-model="formAdd.title" placeholder="请输入..."></Input>
+        </FormItem>
+        <FormItem label="成员">
+          <Input v-model="formAdd.member" placeholder="请输入..."></Input>
+        </FormItem>
+        <FormItem label="显示权重">
+          <select v-model="formAdd.ordering">
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+            <option value="7">7</option>
+            <option value="8">8</option>
+            <option value="9">9</option>
+            <option value="10">10</option>
+          </select>
+        </FormItem>
+        <FormItem label="获取时间">
+          <Row>
+            <Col span="11">
+              <DatePicker type="date" placeholder="Select date" v-model="formAdd.date"></DatePicker>
+            </Col>
+            <Col span="1" style="text-align: center" class="mycolum">-</Col>
+            <Col span="11">
+              <TimePicker type="time" placeholder="Select time" v-model="formAdd.time"></TimePicker>
+            </Col>
+          </Row>
+        </FormItem>
+        <FormItem label="类型">
+          <select v-model="formAdd.type_id">
+            <option value="1">类型A</option>
+          </select>
+        </FormItem>
+        <!-- <FormItem label="Radio">
+          <RadioGroup v-model="formItem.radio">
+            <Radio label="male">Male</Radio>
+            <Radio label="female">Female</Radio>
+          </RadioGroup>
+        </FormItem> -->
+        <FormItem label="是否显示">
+          <i-switch v-model="formAdd.toshow" size="large">
+            <span slot="open">On</span>
+            <span slot="close">Off</span>
+          </i-switch>
+        </FormItem>
+        <!-- <FormItem label="Slider">
+          <Slider v-model="formItem.slider" range></Slider>
+        </FormItem> -->
+        <FormItem label="内容">
+          <Input v-model="formAdd.content" type="textarea" :autosize="{minRows: 2,maxRows: 5}" placeholder="Enter something..."></Input>
+        </FormItem>
+        <FormItem label="图片">
+          <div class="demo-upload-list" v-for="item in formAdd.photoList" :key="item.url">
+            <img :src="'http://localhost:8083/uploaded/'+ item.url">
+            <div class="demo-upload-list-cover">
+              <Icon type="ios-eye-outline" @click.native="handleView(item.url)"></Icon>
+              <Icon type="ios-trash-outline" @click.native="handleRemove(item)"></Icon>
+            </div>
+          </div>
+          <div class="demo-upload-list" v-for="item in uploadList" :key="item.url">
+            <img :src="'http://localhost:8083/uploaded/'+ item.url">
+            <div class="demo-upload-list-cover">
+              <Icon type="ios-eye-outline" @click.native="handleView(item.url)"></Icon>
+              <Icon type="ios-trash-outline" @click.native="handleRemove(item)"></Icon>
+            </div>
+          </div>
+          <Upload
+            ref="upload"
+            :on-success="handleSuccess"
+            :format="['jpg','jpeg','png']"
+            :max-size="2048"
+            :on-format-error="handleFormatError"
+            :on-exceeded-size="handleMaxSize"
+            :before-upload="handleBeforeUpload"
+            multiple
+            type="drag"
+            action="http://localhost:8083/uploadPhoto"
+            style="display: inline-block;width:58px;">
+            <div style="width: 58px;height:58px;line-height: 58px;">
+                <Icon type="ios-camera" size="20"></Icon>
+            </div>
+          </Upload>
+        </FormItem>
+      </Form>
+    </Modal>
     <Modal title="View Image" v-model="visible">
       <img :src="'http://localhost:8083/uploaded/' + viewUrl " v-if="visible" style="width: 100%">
     </Modal>
@@ -104,7 +194,7 @@
 </template>
 <script>
 import expandRow from './table-expand.vue'
-import { getAchievement, updateAchievement, deletePhotos } from '@/myapi/achievementManager'
+import { getAchievement, updateAchievement, deletePhotos, addAchievement } from '@/myapi/achievementManager'
 export default {
   components: { expandRow },
   data () {
@@ -112,9 +202,24 @@ export default {
       currentPage: 1,
       total: 0,
       visibleUpdate: false,
+      visibleAdd: false,
       visible: false,
       uploadList: [],
       viewUrl: '',
+      tomethod: '',
+      formAdd: {
+        id: '', // 为了存储图片，对应id
+        title: '',
+        member: '',
+        content: '',
+        photoList: [],
+        // acquisitiondate : '', // 获取时间
+        time: '', // data + time = acquisitiondate
+        date: '',
+        ordering: '10', // 显示权重
+        toshow: true, // 是否显示
+        type_id: '' // 类型ID
+      },
       formItem: {
         id: '', // 为了存储图片，对应id
         title: '',
@@ -240,6 +345,7 @@ export default {
     },
     show (index) {
       this.visibleUpdate = true
+      this.tomethod = 'update'
       console.log(this.data1[index])
       this.formItem.id = this.data1[index].id
       this.formItem.title = this.data1[index].title
@@ -252,34 +358,51 @@ export default {
       this.formItem.type_id = this.data1[index].type_id
       this.formItem.photoList = []
       this.data1[index].photoList.forEach(item => {
-        console.log(item)
         this.formItem.photoList.push(item)
       })
-      console.log('this.formItem.photoList')
-      console.log(this.formItem.photoList)
     },
     ok () {
       this.uploadList.forEach(item => {
         this.formItem.photoList.push(item)
       })
+      console.log(this.tomethod)
+      if (this.tomethod === 'add') {
+        addAchievement(this.formItem).then(res => {
+          if (res.data.resultCode === 200) {
+            this.data1 = []
+            getAchievement(10, this.currentPage, 'achievements').then(res1 => {
+              let data = res1.data.page
+              if (res1.data.resultCode === '200') {
+                data.list.forEach(element => {
+                  this.data1.push(element)
+                })
+                this.total = data.total
+                this.currentPage = data.pageNum
+              }
+            })
+            this.$Message.info(res.data.message)
+          }
+        })
+      } else if (this.tomethod === 'update') {
+        updateAchievement(this.formItem).then(res => {
+          if (res.data.resultCode === 200) {
+            this.data1 = []
+            getAchievement(10, this.currentPage, 'achievements').then(res1 => {
+              let data = res1.data.page
+              if (res1.data.resultCode === '200') {
+                data.list.forEach(element => {
+                  this.data1.push(element)
+                })
+                this.total = data.total
+                this.currentPage = data.pageNum
+              }
+            })
+            this.$Message.info(res.data.message)
+          }
+        })
+      }
       // this.formItem.photoList.push(this.uploadList)
       // console.log(this.formItem.photoList)
-      updateAchievement(this.formItem).then(res => {
-        if (res.data.resultCode === 200) {
-          this.data1 = []
-          getAchievement(10, this.currentPage, 'achievements').then(res1 => {
-            let data = res1.data.page
-            if (res1.data.resultCode === '200') {
-              data.list.forEach(element => {
-                this.data1.push(element)
-              })
-              this.total = data.total
-              this.currentPage = data.pageNum
-            }
-          })
-          this.$Message.info(res.data.message)
-        }
-      })
       this.uploadList = []
     },
     cancel () {
@@ -291,8 +414,9 @@ export default {
       })
       this.uploadList = []
     },
-    addAchievement () {
-      console.log('xin')
+    add () {
+      this.visibleAdd = true
+      this.tomethod = 'add'
     },
     handleView (url) {
       this.viewUrl = url
@@ -304,12 +428,9 @@ export default {
     },
     handleSuccess (res, file) {
       this.uploadList.push({ 'url': res.url })
-      console.log(this.uploadList)
+      // console.log(this.uploadList)
     },
     handleFormatError (event, file) {
-      console.log('handleFormatError')
-      console.log(file.name)
-      console.log(file.url)
       this.$Notice.warning({
         title: 'The file format is incorrect',
         desc: 'File format of ' + file.name + ' is incorrect, please select jpg or png.'
