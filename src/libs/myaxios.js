@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { getToken } from '@/libs/util'
 // import Qs from 'qs'
 
 // import cookie from '../../static/js/cookie.js'
@@ -7,6 +8,7 @@ import axios from 'axios'
 axios.defaults.timeout = 10000 //  超时时间
 // axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=UTF-8'
 axios.defaults.headers.post['Content-Type'] = 'application/json;charset=UTF-8'
+axios.defaults.headers['Authorization'] = getToken()
 // axios.defaults.headers.post['Content-Type'] = 'text/plain'
 axios.defaults.baseURL = 'http://localhost:8083' //   默认地址
 

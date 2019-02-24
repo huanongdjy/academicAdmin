@@ -1,19 +1,22 @@
 <template>
   <div>
     <Button type="primary" class="mybutton" @click="add">新增成果</Button>
+    <Input search placeholder="请输入成果名称" class="search" v-model="searchValue" @on-search="mysearch">
+      <Icon type="ios-search" slot="suffix" />
+    </Input>
     <Table :columns="columns" :data="data1"></Table>
     <div style="margin: 10px;overflow: hidden">
       <div style="float: right;">
         <Page :total="total" :current="currentPage" @on-change="changePage"></Page>
       </div>
     </div>
-    <Modal title="成果信息编辑" v-model="visibleUpdate" @on-ok="ok" @on-cancel="cancel">
-      <Form :model="formItem" :label-width="80">
-        <FormItem label="成果名称">
-          <Input v-model="formItem.title" placeholder="Enter something..."></Input>
+    <Modal title="成果信息编辑" v-model="visibleUpdate">
+      <Form :model="formItem" :label-width="80" :rules="ruleValid" ref="formItem">
+        <FormItem label="成果名称" prop="title">
+          <Input v-model="formItem.title" placeholder="请输入..."></Input>
         </FormItem>
-        <FormItem label="成员">
-          <Input v-model="formItem.member" placeholder="Enter something..."></Input>
+        <FormItem label="成员" prop="member">
+          <Input v-model="formItem.member" placeholder="请输入..."></Input>
         </FormItem>
         <FormItem label="显示权重">
           <select v-model="formItem.ordering">
@@ -32,15 +35,19 @@
         <FormItem label="获取时间">
           <Row>
             <Col span="11">
-              <DatePicker type="date" placeholder="Select date" v-model="formItem.date"></DatePicker>
+              <FormItem prop="date">
+                <DatePicker type="date" placeholder="选中日期" v-model="formItem.date"></DatePicker>
+              </FormItem>
             </Col>
             <Col span="1" style="text-align: center" class="mycolum">-</Col>
             <Col span="11">
-              <TimePicker type="time" placeholder="Select time" v-model="formItem.time"></TimePicker>
+              <FormItem prop="time">
+                <TimePicker type="time" placeholder="选择时间" v-model="formItem.time"></TimePicker>
+              </FormItem>
             </Col>
           </Row>
         </FormItem>
-        <FormItem label="类型">
+        <FormItem label="类型" prop="type_id">
           <select v-model="formItem.type_id">
             <option value="1">类型A</option>
           </select>
@@ -60,7 +67,7 @@
         <!-- <FormItem label="Slider">
           <Slider v-model="formItem.slider" range></Slider>
         </FormItem> -->
-        <FormItem label="内容">
+        <FormItem label="内容" prop="content">
           <Input v-model="formItem.content" type="textarea" :autosize="{minRows: 2,maxRows: 5}" placeholder="Enter something..."></Input>
         </FormItem>
         <FormItem label="图片">
@@ -71,16 +78,17 @@
               <Icon type="ios-trash-outline" @click.native="handleRemove(item)"></Icon>
             </div>
           </div>
-          <div class="demo-upload-list" v-for="item in uploadList" :key="item.url">
-            <img :src="'http://localhost:8083/uploaded/'+ item.url">
+          <div class="demo-upload-list" v-for="i in uploadList" :key="i.url">
+            <img :src="'http://localhost:8083/uploaded/'+ i.url">
             <div class="demo-upload-list-cover">
-              <Icon type="ios-eye-outline" @click.native="handleView(item.url)"></Icon>
-              <Icon type="ios-trash-outline" @click.native="handleRemove(item)"></Icon>
+              <Icon type="ios-eye-outline" @click.native="handleView(i.url)"></Icon>
+              <Icon type="ios-trash-outline" @click.native="handleRemove(i)"></Icon>
             </div>
           </div>
           <Upload
             ref="upload"
             :on-success="handleSuccess"
+            :show-upload-list="false"
             :format="['jpg','jpeg','png']"
             :max-size="2048"
             :on-format-error="handleFormatError"
@@ -96,16 +104,20 @@
           </Upload>
         </FormItem>
       </Form>
+      <div slot="footer">
+        <Button type="text" size="large" @click="cancel">取消</Button>
+        <Button type="primary" size="large"  @click="ok">确定</Button>
+      </div>
     </Modal>
-    <Modal title="新增成果" v-model="visibleAdd" @on-ok="ok" @on-cancel="cancel">
-      <Form :model="formAdd" :label-width="80">
-        <FormItem label="成果名称">
+    <Modal title="新增成果" v-model="visibleAdd" >
+      <Form :model="formAdd" :label-width="80" :rules="ruleValid" ref="formAdd">
+        <FormItem label="成果名称" prop="title">
           <Input v-model="formAdd.title" placeholder="请输入..."></Input>
         </FormItem>
-        <FormItem label="成员">
+        <FormItem label="成员" prop="member">
           <Input v-model="formAdd.member" placeholder="请输入..."></Input>
         </FormItem>
-        <FormItem label="显示权重">
+        <FormItem label="显示权重" prop="ordering">
           <select v-model="formAdd.ordering">
             <option value="1">1</option>
             <option value="2">2</option>
@@ -119,18 +131,22 @@
             <option value="10">10</option>
           </select>
         </FormItem>
-        <FormItem label="获取时间">
+        <FormItem label="获取时间" prop="date time">
           <Row>
             <Col span="11">
-              <DatePicker type="date" placeholder="Select date" v-model="formAdd.date"></DatePicker>
+              <FormItem prop="date">
+                <DatePicker type="date" placeholder="选择日期" v-model="formAdd.date"></DatePicker>
+              </FormItem>
             </Col>
             <Col span="1" style="text-align: center" class="mycolum">-</Col>
             <Col span="11">
-              <TimePicker type="time" placeholder="Select time" v-model="formAdd.time"></TimePicker>
+              <FormItem prop="time">
+                <TimePicker type="time" placeholder="选择时间" v-model="formAdd.time"></TimePicker>
+              </FormItem>
             </Col>
           </Row>
         </FormItem>
-        <FormItem label="类型">
+        <FormItem label="类型"  prop="type_id">
           <select v-model="formAdd.type_id">
             <option value="1">类型A</option>
           </select>
@@ -150,10 +166,10 @@
         <!-- <FormItem label="Slider">
           <Slider v-model="formItem.slider" range></Slider>
         </FormItem> -->
-        <FormItem label="内容">
-          <Input v-model="formAdd.content" type="textarea" :autosize="{minRows: 2,maxRows: 5}" placeholder="Enter something..."></Input>
+        <FormItem label="内容" prop="content">
+          <Input v-model="formAdd.content" type="textarea" :autosize="{minRows: 2,maxRows: 5}" placeholder="请输入..."></Input>
         </FormItem>
-        <FormItem label="图片">
+        <!-- <FormItem label="已上传图片" v-if="formAdd.photoList.length > 0">
           <div class="demo-upload-list" v-for="item in formAdd.photoList" :key="item.url">
             <img :src="'http://localhost:8083/uploaded/'+ item.url">
             <div class="demo-upload-list-cover">
@@ -161,22 +177,26 @@
               <Icon type="ios-trash-outline" @click.native="handleRemove(item)"></Icon>
             </div>
           </div>
-          <div class="demo-upload-list" v-for="item in uploadList" :key="item.url">
-            <img :src="'http://localhost:8083/uploaded/'+ item.url">
+        </FormItem> -->
+        <FormItem label="上传图片">
+          <div class="demo-upload-list" v-for="i in uploadList" :key="i.url">
+            <img :src="'http://localhost:8083/uploaded/'+ i.url">
             <div class="demo-upload-list-cover">
-              <Icon type="ios-eye-outline" @click.native="handleView(item.url)"></Icon>
-              <Icon type="ios-trash-outline" @click.native="handleRemove(item)"></Icon>
+              <Icon type="ios-eye-outline" @click.native="handleView(i.url)"></Icon>
+              <Icon type="ios-trash-outline" @click.native="handleRemove(i)"></Icon>
             </div>
           </div>
           <Upload
             ref="upload"
             :on-success="handleSuccess"
+            :show-upload-list="false"
             :format="['jpg','jpeg','png']"
             :max-size="2048"
             :on-format-error="handleFormatError"
             :on-exceeded-size="handleMaxSize"
             :before-upload="handleBeforeUpload"
             multiple
+            :headers = "header"
             type="drag"
             action="http://localhost:8083/uploadPhoto"
             style="display: inline-block;width:58px;">
@@ -186,6 +206,10 @@
           </Upload>
         </FormItem>
       </Form>
+      <div slot="footer">
+        <Button type="text" size="large" @click="cancel">取消</Button>
+        <Button type="primary" size="large"  @click="ok">确定</Button>
+      </div>
     </Modal>
     <Modal title="View Image" v-model="visible">
       <img :src="'http://localhost:8083/uploaded/' + viewUrl " v-if="visible" style="width: 100%">
@@ -194,11 +218,62 @@
 </template>
 <script>
 import expandRow from './table-expand.vue'
-import { getAchievement, updateAchievement, deletePhotos, addAchievement } from '@/myapi/achievementManager'
+import { getToken } from '@/libs/util'
+import { getAchievement, updateAchievement, deletePhotos, addAchievement, deleteAchievement, searchaChievement } from '@/myapi/achievementManager'
 export default {
   components: { expandRow },
   data () {
+    const validateTitle = (rule, value, callback) => {
+      if (value === '') {
+        callback(new Error('请输入名称'))
+      } else {
+        callback()
+      }
+    }
+    const validateMember = (rule, value, callback) => {
+      if (value === '') {
+        callback(new Error('请输入成员'))
+      } else {
+        callback()
+      }
+    }
+    const validateContent = (rule, value, callback) => {
+      if (value === '') {
+        callback(new Error('请输入内容'))
+      } else {
+        callback()
+      }
+    }
+    const validateTime = (rule, value, callback) => {
+      if (value === '') {
+        callback(new Error('请选择时间'))
+      } else {
+        callback()
+      }
+    }
+    const validateDate = (rule, value, callback) => {
+      if (value === '') {
+        callback(new Error('请输入日期'))
+      } else {
+        callback()
+      }
+    }
+    // const validateOrdering = (rule, value, callback) => {
+    //   if (value === '') {
+    //     callback(new Error('请输入名称'))
+    //   } else {
+    //     callback()
+    //   }
+    // }
+    const validateType_id = (rule, value, callback) => {
+      if (value === '') {
+        callback(new Error('请选中类型'))
+      } else {
+        callback()
+      }
+    }
     return {
+      searchValue: '',
       currentPage: 1,
       total: 0,
       visibleUpdate: false,
@@ -327,13 +402,43 @@ export default {
           }
         }
       ],
-      data1: []
+      data1: [],
+      ruleValid: {
+        title: [
+          { validator: validateTitle, trigger: 'blur' }
+        ],
+        member: [
+          { validator: validateMember, trigger: 'blur' }
+        ],
+        content: [
+          { validator: validateContent, trigger: 'blur' }
+        ],
+        time: [
+          { validator: validateTime, trigger: 'blur' }
+        ],
+        date: [
+          { validator: validateDate, trigger: 'blur' }
+        ],
+        // ordering: [
+        //   { validator: validateOrdering, trigger: 'blur' }
+        // ],
+        // toshow: [
+        //   { validator: validateToshow, trigger: 'blur' }
+        // ],
+        type_id: [
+          { validator: validateType_id, trigger: 'blur' }
+        ]
+      },
+      header: {
+        Authorization: getToken()
+      }
     }
   },
   methods: {
     changePage (index) {
       getAchievement(10, index, 'achievements').then(res => {
         let data = res.data.page
+        this.data1 = []
         if (res.data.resultCode === '200') {
           data.list.forEach(element => {
             this.data1.push(element)
@@ -343,10 +448,20 @@ export default {
         }
       })
     },
+    mysearch () {
+      searchaChievement(this.searchValue).then(res => {
+        console.log(res)
+        if (res.data.resultCode === 200) {
+          this.tableData1 = []
+          this.tableData1.push(res.data.user)
+        } else {
+          this.$Message.info('该成果名不存在')
+        }
+      })
+    },
     show (index) {
       this.visibleUpdate = true
       this.tomethod = 'update'
-      console.log(this.data1[index])
       this.formItem.id = this.data1[index].id
       this.formItem.title = this.data1[index].title
       this.formItem.member = this.data1[index].member
@@ -361,57 +476,89 @@ export default {
         this.formItem.photoList.push(item)
       })
     },
-    ok () {
-      this.uploadList.forEach(item => {
-        this.formItem.photoList.push(item)
+    remove (index) {
+      deleteAchievement(this.data1[index].id).then(res => {
+        console.log(res.data.resultCode === 200)
+        if (res.data.resultCode === 200) {
+          this.$Message.info(res.data.message)
+          // this.tableData1.splice(index, 1)
+          this.changePage(this.currentPage)
+        } else {
+          this.$Message.info('删除成果失败')
+        }
       })
-      console.log(this.tomethod)
+    },
+    ok () {
+      // console.log(this.tomethod)
       if (this.tomethod === 'add') {
-        addAchievement(this.formItem).then(res => {
-          if (res.data.resultCode === 200) {
-            this.data1 = []
-            getAchievement(10, this.currentPage, 'achievements').then(res1 => {
-              let data = res1.data.page
-              if (res1.data.resultCode === '200') {
-                data.list.forEach(element => {
-                  this.data1.push(element)
+        this.$refs['formAdd'].validate(vaild => {
+          if (vaild) {
+            this.uploadList.forEach(item => {
+              this.formAdd.photoList.push(item)
+            })
+            addAchievement(this.formAdd).then(res => {
+              if (res.data.resultCode === 200) {
+                this.data1 = []
+                getAchievement(10, this.currentPage, 'achievements').then(res1 => {
+                  let data = res1.data.page
+                  if (res1.data.resultCode === '200') {
+                    data.list.forEach(element => {
+                      this.data1.push(element)
+                    })
+                    this.total = data.total
+                    this.currentPage = data.pageNum
+                  }
                 })
-                this.total = data.total
-                this.currentPage = data.pageNum
+                this.$Message.info(res.data.message)
               }
             })
-            this.$Message.info(res.data.message)
+            this.visibleAdd = false
+            this.uploadList = []
+          } else {
+            return false
           }
         })
       } else if (this.tomethod === 'update') {
-        updateAchievement(this.formItem).then(res => {
-          if (res.data.resultCode === 200) {
-            this.data1 = []
-            getAchievement(10, this.currentPage, 'achievements').then(res1 => {
-              let data = res1.data.page
-              if (res1.data.resultCode === '200') {
-                data.list.forEach(element => {
-                  this.data1.push(element)
+        this.$refs['formItem'].validate(vaild => {
+          if (vaild) {
+            this.uploadList.forEach(item => {
+              this.formItem.photoList.push(item)
+            })
+            updateAchievement(this.formItem).then(res => {
+              if (res.data.resultCode === 200) {
+                this.data1 = []
+                getAchievement(10, this.currentPage, 'achievements').then(res1 => {
+                  let data = res1.data.page
+                  if (res1.data.resultCode === '200') {
+                    data.list.forEach(element => {
+                      this.data1.push(element)
+                    })
+                    this.total = data.total
+                    this.currentPage = data.pageNum
+                  }
                 })
-                this.total = data.total
-                this.currentPage = data.pageNum
+                this.$Message.info(res.data.message)
               }
             })
-            this.$Message.info(res.data.message)
+            this.visibleUpdate = false
+            this.uploadList = []
+          } else {
+            return false
           }
         })
       }
       // this.formItem.photoList.push(this.uploadList)
       // console.log(this.formItem.photoList)
-      this.uploadList = []
     },
     cancel () {
       deletePhotos(this.uploadList).then(res => {
         if (res.data.warn) {
-          console.log(res.data.warn)
+          // console.log(res.data.warn)
           this.$Message.warning(res.data.message)
         }
       })
+      this.visibleAdd = false
+      this.visibleUpdate = false
       this.uploadList = []
     },
     add () {
@@ -432,22 +579,21 @@ export default {
     },
     handleFormatError (event, file) {
       this.$Notice.warning({
-        title: 'The file format is incorrect',
-        desc: 'File format of ' + file.name + ' is incorrect, please select jpg or png.'
+        title: '格式错误',
+        desc: '文件格式： ' + file.name + ' 不是正确的格式，请选中jpg、jpeg、png等格式图片。'
       })
     },
     handleMaxSize (file) {
-      console.log('handleMaxSize' + file)
       this.$Notice.warning({
-        title: 'Exceeding file size limit',
-        desc: 'File  ' + file.name + ' is too large, no more than 2M.'
+        title: '图片过大',
+        desc: '文件最大为2m.'
       })
     },
     handleBeforeUpload () {
-      const check = this.uploadList.length < 5
+      const check = this.uploadList.length < 10
       if (!check) {
         this.$Notice.warning({
-          title: 'Up to five pictures can be uploaded.'
+          title: '最多上传10张图片.'
         })
       }
       return check
@@ -474,5 +620,9 @@ export default {
 } */
 .mybutton {
   margin-bottom: 10px
+}
+.search {
+  width: 200px;
+  float: right
 }
 </style>

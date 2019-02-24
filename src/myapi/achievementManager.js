@@ -51,7 +51,25 @@ export function addAchievement (inputJson) {
   return axios({
     url: '/addAchievement',
     method: 'post',
-    data: uploadList,
+    data: inputJson,
+    withCredentials: true
+  })
+}
+
+export function deleteAchievement (inputJson) {
+  return axios({
+    url: '/deleteAchievement',
+    method: 'post',
+    data: inputJson,
+    withCredentials: true
+  })
+}
+
+export function searchaChievement (inputJson) {
+  return axios({
+    url: '/searchaChievement',
+    method: 'post',
+    data: inputJson,
     withCredentials: true
   })
 }

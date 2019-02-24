@@ -14,35 +14,18 @@
     <!-- <Row class="expand-row">
       <Col span="24"> -->
     <span class="expand-key">照片: </span>
-    <div class="demo-upload-list" v-for="item in imageList" :key="item.name">
-      <img :src="item.url">
+    <div class="demo-upload-list" v-for="item in row.photoList" :key="item.name">
+      <img :src="'http://localhost:8083/uploaded/' + item.url">
       <div class="demo-upload-list-cover">
         <Icon type="ios-eye-outline" @click.native="handleView(item.url)"></Icon>
         <Icon type="ios-trash-outline" @click.native="handleRemove(item)"></Icon>
       </div>
     </div>
-        <!-- <Upload
-          ref="upload"
-          :show-upload-list="false"
-          :on-success="handleSuccess"
-          :format="['jpg','jpeg','png']"
-          :max-size="2048"
-          :on-format-error="handleFormatError"
-          :on-exceeded-size="handleMaxSize"
-          :before-upload="handleBeforeUpload"
-          multiple
-          type="drag"
-          action="//jsonplaceholder.typicode.com/posts/"
-          style="display: inline-block;width:58px;">
-          <div style="width: 58px;height:58px;line-height: 58px;">
-              <Icon type="ios-camera" size="20"></Icon>
-          </div>
-        </Upload> -->
         <!-- <span class="expand-value">{{ row.photoList }}</span>
       </Col>
     </Row> -->
     <Modal title="View Image" v-model="visible">
-      <img :src="viewUrl" v-if="visible" style="width: 100%">
+      <img :src="'http://localhost:8083/uploaded/' +  viewUrl" v-if="visible" style="width: 100%">
     </Modal>
   </div>
 </template>

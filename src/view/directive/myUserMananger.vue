@@ -14,7 +14,6 @@
     <Modal
       v-model="modal"
       :title="title"
-      @on-ok="ok"
       >
       <Form ref="formCustom" :model="formCustom" :rules="ruleCustom" :label-width="80">
         <FormItem label="用户名" prop="username">
@@ -43,6 +42,10 @@
           <Button @click="handleReset('formCustom')" style="margin-left: 8px">Reset</Button>
         </FormItem> -->
       </Form>
+      <div slot="footer">
+        <Button type="text" size="large" @click="cancel">取消</Button>
+        <Button type="primary" size="large"  @click="ok">确定</Button>
+      </div>
     </Modal>
   </div>
 </template>
@@ -230,15 +233,23 @@ export default {
       })
     },
     ok () {
-      if (this.tomethod === 'update') {
-        updateUser(this.formCustom).then(res => {
-          this.$Message.info(res.data.message)
-        })
-      } else if (this.tomethod === 'add') {
-        addUser(this.formCustom).then(res => {
-          this.$Message.info(res.data.message)
-        })
-      }
+      this.$refs['formCustom'].validate(valid => {
+        if (valid) {
+          if (this.tomethod === 'update') {
+            updateUser(this.formCustom).then(res => {
+              this.$Message.info(res.data.message)
+            })
+          } else if (this.tomethod === 'add') {
+            addUser(this.formCustom).then(res => {
+              this.$Message.info(res.data.message)
+            })
+          }
+          this.modal = false
+        }
+      })
+    },
+    cancel () {
+      this.modal = false
     },
     addUser () {
       this.modal = true

@@ -86,7 +86,6 @@ export default {
           // console.log(data)
           commit('setToken', res.data.token)
           const data = res.data.user
-          console.log(data.identity.access)
           // commit('setAvator', data.avator)
           commit('setUserName', data.username)
           commit('setUserId', data.userId)
@@ -121,7 +120,6 @@ export default {
         try {
           getUserInfo(state.token).then(res => {
             const data = res.data.user
-            console.log(data.identity.access)
             // commit('setAvator', data.avator)
             commit('setUserName', data.username)
             commit('setUserId', data.userId)

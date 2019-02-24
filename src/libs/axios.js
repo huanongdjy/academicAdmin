@@ -1,5 +1,6 @@
 import axios from 'axios'
 import store from '@/store'
+import { getToken } from '@/libs/util'
 // import { Spin } from 'iview'
 
 axios.defaults.headers.post['Content-Type'] = 'application/json;charset=UTF-8'
@@ -24,10 +25,10 @@ class HttpRequest {
     const config = {
       baseURL: this.baseUrl,
       headers: {
-        'Content-Type': 'application/json;charset=UTF-8'
+        'Content-Type': 'application/json;charset=UTF-8',
         // 'Content-Type': 'application/x-www-form-urlencoded'
         // 'REQ-TYPE': 'API'
-        // 'Authorization': 'Bearer'
+        'Authorization': getToken()
       }
     }
     return config
