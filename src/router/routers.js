@@ -150,6 +150,25 @@ export default [
   },
   {
     path: '',
+    name: 'record',
+    meta: {
+      hideInBread: true
+    },
+    component: Main,
+    children: [
+      {
+        path: 'editor_page',
+        name: 'editor_page',
+        meta: {
+          icon: 'ios-create',
+          title: '富文本编辑器'
+        },
+        component: () => import('@/view/directive/editor.vue')
+      }
+    ]
+  },
+  {
+    path: '',
     name: 'statistics',
     meta: {
       hideInBread: true
@@ -304,6 +323,7 @@ export default [
           icon: 'ios-create',
           title: '富文本编辑器'
         },
+        // component: () => import('@/view/components/editor/editor.vue')
         component: () => import('@/view/components/editor/editor.vue')
       },
       {

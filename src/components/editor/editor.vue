@@ -64,6 +64,13 @@ export default {
     // 如果本地有存储加载本地存储内容
     let html = this.value || localStorage.editorCache
     if (html) this.editor.txt.html(html)
+    this.editor.addButton('imageSelector', {
+      icon: 'image',
+      tooltip: '上传图片',
+      onclick: function () {
+        $('#my_form input').click()
+      }
+    })
   }
 }
 </script>
