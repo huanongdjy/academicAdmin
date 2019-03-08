@@ -450,7 +450,6 @@ export default {
     },
     mysearch () {
       searchaChievement(this.searchValue).then(res => {
-        console.log(res)
         if (res.data.resultCode === 200) {
           this.tableData1 = []
           this.tableData1.push(res.data.user)
