@@ -8,3 +8,44 @@ export function addEssay (inputJson) {
     withCredentials: true
   })
 }
+
+export function getEssays (pageSize, currentPage, type) {
+  var inputJson = {
+    pageSize,
+    currentPage,
+    type
+  }
+  return axios({
+    url: '/getInformationWithPage',
+    method: 'post',
+    data: inputJson,
+    withCredentials: true
+  })
+}
+
+export function searchaEssays (inputJson) {
+  return axios({
+    url: '/searchaEssays',
+    method: 'post',
+    data: inputJson,
+    withCredentials: true
+  })
+}
+
+export function deleteEssay (inputJson) {
+  return axios({
+    url: '/deleteEssay',
+    method: 'post',
+    data: inputJson,
+    withCredentials: true
+  })
+}
+
+export function updateEssay (inputJson) {
+  return axios({
+    url: '/updateEssay',
+    method: 'post',
+    data: inputJson,
+    withCredentials: true
+  })
+}

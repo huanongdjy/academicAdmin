@@ -23,6 +23,7 @@
 </template>
 <script>
 import expandRow from './essay-expand.vue'
+import { getEssays, deleteEssay, searchaEssays } from '@/myapi/essayManager'
 export default {
   components: { expandRow },
   data () {
@@ -145,30 +146,30 @@ export default {
     }
   },
   methods: {
-    // changePage (index) {
-    //   getEssay(10, index, 'achievements').then(res => {
-    //     let data = res.data.page
-    //     this.data1 = []
-    //     if (res.data.resultCode === '200') {
-    //       data.list.forEach(element => {
-    //         this.data1.push(element)
-    //       })
-    //       this.total = data.total
-    //       this.currentPage = data.pageNum
-    //     }
-    //   })
-    // },
-    // mysearch () {
-    //   searchaChievement(this.searchValue).then(res => {
-    //     console.log(res)
-    //     if (res.data.resultCode === 200) {
-    //       this.tableData1 = []
-    //       this.tableData1.push(res.data.user)
-    //     } else {
-    //       this.$Message.info('该成果名不存在')
-    //     }
-    //   })
-    // },
+    changePage (index) {
+      getEssays(10, index, 'activity').then(res => {
+        let data = res.data.page
+        this.data1 = []
+        if (res.data.resultCode === '200') {
+          data.list.forEach(element => {
+            this.data1.push(element)
+          })
+          this.total = data.total
+          this.currentPage = data.pageNum
+        }
+      })
+    },
+    mysearch () {
+      searchaEssays(this.searchValue).then(res => {
+        console.log(res)
+        if (res.data.resultCode === 200) {
+          this.tableData1 = []
+          this.tableData1.push(res.data.user)
+        } else {
+          this.$Message.info('该文章名不存在')
+        }
+      })
+    },
     // show (index) {
     //   this.visibleUpdate = true
     //   this.tomethod = 'update'
@@ -186,18 +187,36 @@ export default {
     //     this.formItem.photoList.push(item)
     //   })
     // },
-    // remove (index) {
-    //   deleteAchievement(this.data1[index].id).then(res => {
-    //     console.log(res.data.resultCode === 200)
-    //     if (res.data.resultCode === 200) {
-    //       this.$Message.info(res.data.message)
-    //       // this.tableData1.splice(index, 1)
-    //       this.changePage(this.currentPage)
-    //     } else {
-    //       this.$Message.info('删除成果失败')
-    //     }
-    //   })
-    // },
+    remove (index) {
+      deleteEssay(this.data1[index].id).then(res => {
+        console.log(res.data.resultCode === 200)
+        if (res.data.resultCode === 200) {
+          this.$Message.info(res.data.message)
+          // this.tableData1.splice(index, 1)
+          this.changePage(this.currentPage)
+        } else {
+          this.$Message.info('删除文章失败')
+        }
+      })
+    },
+    add () {
+    },
+    cancel () {
+    },
+    ok () {
+    }
+  },
+  created () {
+    getEssays(10, 1, 'activity').then(res => {
+      let data = res.data.page
+      if (res.data.resultCode === '200') {
+        data.list.forEach(element => {
+          this.data1.push(element)
+        })
+        this.total = data.total
+        this.currentPage = data.pageNum
+      }
+    })
   }
 }
 </script>
