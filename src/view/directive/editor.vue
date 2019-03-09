@@ -14,8 +14,8 @@
   <FormItem label="举办者" prop="organizer">
     <Input v-model="editValue.organizer" placeholder="请输入..."></Input>
   </FormItem>
-  <FormItem label="举办地点" prop="localtion">
-    <Input v-model="editValue.localtion" placeholder="请输入..."></Input>
+  <FormItem label="举办地点" prop="location">
+    <Input v-model="editValue.location" placeholder="请输入..."></Input>
   </FormItem>
   <FormItem label="举办时间">
     <Row>
@@ -45,8 +45,8 @@
     </quillEditor>
   </FormItem>
   <FormItem>
-    <Button type="primary" @click="handleSubmit()">提交</Button>
-    <Button @click="handleReset('formValidate')" style="margin-left: 8px">重置</Button>
+    <!-- <Button type="primary" @click="handleSubmit()">提交</Button>
+    <Button @click="handleReset('formValidate')" style="margin-left: 8px">重置</Button> -->
   </FormItem>
 </Form>
 </template>
@@ -59,11 +59,37 @@ import 'quill/dist/quill.bubble.css'
 import { quillEditor, Quill } from 'vue-quill-editor'
 import { container, ImageExtend, QuillWatch } from 'quill-image-extend-module'
 import { getToken } from '@/libs/util'
-import { addEssay } from '@/myapi/essayManager'
+import { addEssay, updateEssay } from '@/myapi/essayManager'
 Quill.register('modules/ImageExtend', ImageExtend)
 export default {
   components: {
     quillEditor
+  },
+  props: {
+    editValue: {
+      type: Object,
+      default: function () {
+        return {
+          id: '',
+          title: '',
+          theme: '',
+          summary: '',
+          location: '',
+          fund: '',
+          organizer: '',
+          planned_attendance: '',
+          type_id: '',
+          date: '',
+          time: '',
+          ordering: '',
+          content: '',
+          photoList: []
+        }
+      }
+    },
+    tomethod: {
+      type: String
+    }
   },
   data () {
     const validateTitle = (rule, value, callback) => {
@@ -108,7 +134,7 @@ export default {
         callback()
       }
     }
-    const validateLocaltion = (rule, value, callback) => {
+    const validateLocation = (rule, value, callback) => {
       if (value === '') {
         callback(new Error('请输入举办地点'))
       } else {
@@ -138,20 +164,20 @@ export default {
     }
     return {
       uploadList: [],
-      editValue: {
-        title: '',
-        theme: '',
-        summary: '',
-        localtion: '',
-        fund: '',
-        organizer: '',
-        planned_attendance: '',
-        type_id: '',
-        date: '',
-        time: '',
-        content: '',
-        photoList: []
-      },
+      // editValue: {
+      //   title: '',
+      //   theme: '',
+      //   summary: '',
+      //   location: '',
+      //   fund: '',
+      //   organizer: '',
+      //   planned_attendance: '',
+      //   type_id: '',
+      //   date: '',
+      //   time: '',
+      //   content: '',
+      //   photoList: []
+      // },
       ruleValid: {
         title: [
           { validator: validateTitle, trigger: 'blur' }
@@ -171,8 +197,8 @@ export default {
         type_id: [
           { validator: validateType_id, trigger: 'blur' }
         ],
-        localtion: [
-          { validator: validateLocaltion, trigger: 'blur' }
+        location: [
+          { validator: validateLocation, trigger: 'blur' }
         ],
         fund: [
           { validator: validateFund, trigger: 'blur' }
@@ -215,30 +241,42 @@ export default {
   },
   methods: {
     handleSubmit () {
-      console.log('调用')
       this.$refs['editValue'].validate(vaild => {
         if (vaild) {
-          console.log('调用tong')
-          this.uploadList.forEach(item => {
-            this.editValue.photoList.push(item)
-          })
-          addEssay(this.editValue).then(res => {
-            if (res.data.resultCode === 200) {
-              // this.data1 = []
-              // get(10, this.currentPage, 'achievements').then(res1 => {
-              //   let data = res1.data.page
-              //   if (res1.data.resultCode === '200') {
-              //     data.list.forEach(element => {
-              //       this.data1.push(element)
-              //     })
-              //     this.total = data.total
-              //     this.currentPage = data.pageNum
-              //   }
-              // })
-              this.$Message.info(res.data.message)
-            }
-          })
+          console.log(this.tomethod)
+          if (!(this.uploadList.length === 0)) {
+            this.uploadList.forEach(item => {
+              this.editValue.photoList.push(item)
+            })
+          }
+          if (this.tomethod === 'add') {
+            addEssay(this.editValue).then(res => {
+              if (res.data.resultCode === 200) {
+                // this.data1 = []
+                // get(10, this.currentPage, 'achievements').then(res1 => {
+                //   let data = res1.data.page
+                //   if (res1.data.resultCode === '200') {
+                //     data.list.forEach(element => {
+                //       this.data1.push(element)
+                //     })
+                //     this.total = data.total
+                //     this.currentPage = data.pageNum
+                //   }
+                // })
+                this.$emit('updatePage')
+                this.$Message.info(res.data.message)
+              }
+            })
+          } else if (this.tomethod === 'update') {
+            updateEssay(this.editValue).then(res => {
+              if (res.data.resultCode === 200) {
+                this.$emit('updatePage')
+                this.$Message.info(res.data.message)
+              }
+            })
+          }
           this.uploadList = []
+          this.$emit('changeVisible', false)
         } else {
           return false
         }

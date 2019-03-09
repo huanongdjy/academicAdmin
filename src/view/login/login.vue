@@ -8,7 +8,7 @@
       <Card icon="log-in" title="欢迎登录" :bordered="false">
         <div class="form-con">
           <login-form @on-success-valid="handleSubmit"></login-form>
-          <!-- <p class="login-tip">输入任意用户名和密码即可</p> -->
+          <p class="login-tip tip" v-show="visible">{{message}}</p>
         </div>
       </Card>
     </div>
@@ -22,6 +22,12 @@ export default {
   components: {
     LoginForm
   },
+  data () {
+    return {
+      visible: false,
+      message: ''
+    }
+  },
   methods: {
     ...mapActions([
       'handleLogin',
@@ -29,15 +35,15 @@ export default {
     ]),
     handleSubmit ({ username, password, identity }) {
       this.handleLogin({ username, password, identity }).then(res => {
-        // this.getUserInfo({ usre }).then(res => {
-        //   console.log()
-        console.log(res.data.resultCode)
         let data = res.data
         if (data.resultCode === 200) {
-          console.log(this.$config.homeName)
           this.$router.push({
             name: this.$config.homeName
           })
+        } else {
+          console.log(data)
+          this.visible = true
+          this.message = data.message
         }
         // })
       })
@@ -47,5 +53,7 @@ export default {
 </script>
 
 <style>
-
+.tip {
+  color: #FF0000;
+}
 </style>

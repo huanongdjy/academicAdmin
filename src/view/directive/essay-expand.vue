@@ -8,11 +8,11 @@
     <Row>
       <Col span="12">
         <span class="expand-key">发表时间: </span>
-        <span class="expand-value">{{ row.summary }}</span>
+        <span class="expand-value">{{ row.time.slice(0, 10) }}</span>
       </Col>
       <Col span="12">
         <span class="expand-key">阅读量: </span>
-        <span class="expand-value">{{ row.summary }}</span>
+        <span class="expand-value">{{ row.read_num }}</span>
       </Col>
     </Row>
     <Row class="expand-row">
@@ -24,7 +24,7 @@
     <Row class="expand-row">
       <Col span="24">
         <span class="expand-key">内容: </span>
-        <span class="expand-value">{{ row.content }}</span>
+        <span class="expand-value" v-html="row.content">{{ row.content }}</span>
       </Col>
     </Row>
   </div>

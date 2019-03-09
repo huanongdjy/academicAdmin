@@ -1,6 +1,6 @@
 <template>
   <div>
-    <Button type="primary" class="mybutton" @click="addUser">新增类型</Button>
+    <Button type="primary" class="mybutton" @click="addType">新增类型</Button>
     <Input search placeholder="请输入名称" class="search" v-model="searchValue" @on-search="mysearch">
       <Icon type="ios-search" slot="suffix" />
     </Input>
@@ -17,10 +17,10 @@
       >
       <Form ref="formCustom" :model="formCustom" :rules="ruleCustom" :label-width="80">
         <FormItem label="名称" prop="type_name">
-          <Input type="text" v-model="formCustom.username"></Input>
+          <Input type="text" v-model="formCustom.type_name"></Input>
         </FormItem>
         <FormItem label="描述" prop="description">
-          <Input type="text" v-model="formCustom.password"></Input>
+          <Input type="text" v-model="formCustom.description"></Input>
         </FormItem>
       </Form>
       <div slot="footer">
@@ -32,81 +32,37 @@
 </template>
 
 <script>
-// import { getUsers, updateUser, addUser, searchUser, deleteUser } from '@/myapi/userMananger'
+import { getTypes, searchType, deleteType, updateType, addType } from '@/myapi/typeManager'
 export default {
   data () {
-    const validatePass = (rule, value, callback) => {
+    const validateType_name = (rule, value, callback) => {
       if (value === '') {
-        callback(new Error('请输入密码'))
-      } else {
-        // if (this.formCustom.passwdCheck !== '') {
-        //   // 对第二个密码框单独验证
-        //   this.$refs.formCustom.validateField('passwdCheck')
-        // }
-        callback()
-      }
-    }
-    // const validatePassCheck = (rule, value, callback) => {
-    //   if (value === '') {
-    //     callback(new Error('Please enter your password again'))
-    //   } else if (value !== this.formCustom.passwd) {
-    //     callback(new Error('The two input passwords do not match!'))
-    //   } else {
-    //     callback()
-    //   }
-    // }
-    const validateIdentity = (rule, value, callback) => {
-      if (value === '') {
-        callback(new Error('Please enter your password again'))
+        callback(new Error('请输入类型名称'))
       } else {
         callback()
       }
     }
-    const validateUsername = (rule, value, callback) => {
+    const validateDescription = (rule, value, callback) => {
       if (value === '') {
-        callback(new Error('请输入用户名'))
+        callback(new Error('请输入类型的描述'))
       } else {
         callback()
-      }
-    }
-    const validateMailbox = (rule, value, callback) => {
-      if (value === '') {
-        callback(new Error('请输入邮箱'))
-      } else {
-        var reg = /^[A-Za-z0-9\u4e00-\u9fa5]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/
-        if (!reg.test(value)) {
-          callback(new Error('请输入有效的邮箱'))
-        } else {
-          callback()
-        }
       }
     }
     return {
       formCustom: {
-        username: '',
-        password: '',
-        // passwdCheck: '',
-        identity: 2,
-        mailbox: ''
+        type_name: '',
+        description: ''
       },
       title: '',
       tomethod: '',
       searchValue: '',
       ruleCustom: {
-        username: [
-          { validator: validateUsername, trigger: 'blur' }
+        type_name: [
+          { validator: validateType_name, trigger: 'blur' }
         ],
-        password: [
-          { validator: validatePass, trigger: 'blur' }
-        ],
-        // passwdCheck: [
-        //   { validator: validatePassCheck, trigger: 'blur' }
-        // ],
-        identity: [
-          { validator: validateIdentity, trigger: 'blur' }
-        ],
-        mailbox: [
-          { validator: validateMailbox, trigger: 'blur' }
+        description: [
+          { validator: validateDescription, trigger: 'blur' }
         ]
       },
       modal: false,
@@ -117,18 +73,11 @@ export default {
       tableColumns1: [
         {
           title: '类型名称',
-          key: 'username'
+          key: 'type_name'
         },
         {
-          title: '角色',
-          key: 'identity',
-          render: (h, params) => {
-            return h('div', params.row.identity.access)
-          }
-        },
-        {
-          title: '邮箱',
-          key: 'mailbox'
+          title: '描述',
+          key: 'description'
         },
         {
           title: '操作',
@@ -169,16 +118,8 @@ export default {
     }
   },
   methods: {
-    formatDate (date) {
-      const y = date.getFullYear()
-      let m = date.getMonth() + 1
-      m = m < 10 ? '0' + m : m
-      let d = date.getDate()
-      d = d < 10 ? ('0' + d) : d
-      return y + '-' + m + '-' + d
-    },
     changePage (index) {
-      getUsers(10, index).then(res => {
+      getTypes(10, index).then(res => {
         let data = res.data.page
         if (res.data.resultCode === '200') {
           this.tableData1 = []
@@ -189,27 +130,24 @@ export default {
           this.currentPage = data.pageNum
         }
       })
-      // The simulated data is changed directly here, and the actual usage scenario should fetch the data from the server
-      // this.tableData1 =
     },
     show (index) {
       this.modal = true
       let data = this.tableData1[index]
-      this.formCustom.username = data.username
-      this.formCustom.identity = data.identity.identity_id
-      this.formCustom.password = data.password
-      this.formCustom.mailbox = data.mailbox
-      this.title = '用户信息编辑'
+      this.formCustom.type_name = data.type_name
+      this.formCustom.description = data.description
+      this.formCustom.type_id = data.type_id
+      this.title = '类型信息编辑'
       this.tomethod = 'update'
     },
     remove (index) {
-      deleteUser(this.tableData1[index].username).then(res => {
+      deleteType(this.tableData1[index].type_id).then(res => {
         if (res.data.resultCode === 200) {
           this.$Message.info(res.data.message)
           // this.tableData1.splice(index, 1)
           this.changePage(this.currentPage)
         } else {
-          this.$Message.info('删除用户失败')
+          this.$Message.info('删除类型失败')
         }
       })
     },
@@ -217,12 +155,15 @@ export default {
       this.$refs['formCustom'].validate(valid => {
         if (valid) {
           if (this.tomethod === 'update') {
-            updateUser(this.formCustom).then(res => {
+            updateType(this.formCustom).then(res => {
               this.$Message.info(res.data.message)
+              this.changePage(this.currentPage)
             })
           } else if (this.tomethod === 'add') {
-            addUser(this.formCustom).then(res => {
+            console.log(this.formCustom.type_id)
+            addType(this.formCustom).then(res => {
               this.$Message.info(res.data.message)
+              this.changePage(this.currentPage)
             })
           }
           this.modal = false
@@ -232,28 +173,26 @@ export default {
     cancel () {
       this.modal = false
     },
-    addUser () {
+    addType () {
       this.modal = true
-      this.formCustom.username = ''
-      this.formCustom.identity = 1
-      this.formCustom.password = ''
-      this.formCustom.mailbox = ''
-      this.title = '新增用户'
+      this.formCustom.type_name = ''
+      this.formCustom.description = ''
+      this.title = '新增类型'
       this.tomethod = 'add'
     },
     mysearch () {
-      searchUser(this.searchValue).then(res => {
-        if (res.data.resultCode === 200) {
+      searchType(this.searchValue).then(res => {
+        if (res.data.resultCode === 200 && !(res.data.essays.length === 0)) {
           this.tableData1 = []
-          this.tableData1.push(res.data.user)
+          this.tableData1.push(res.data.essays)
         } else {
-          this.$Message.info('该用户名不存在')
+          this.$Message.info('该类型名称不存在')
         }
       })
     }
   },
   created () {
-    getUsers(10, 1).then(res => {
+    getTypes(10, 1).then(res => {
       let data = res.data.page
       if (res.data.resultCode === '200') {
         data.list.forEach(element => {

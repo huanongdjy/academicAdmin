@@ -124,7 +124,7 @@ export default [
           href: '',
           icon: 'ios-book'
         },
-        component: () => import('@/view/directive/directive.vue')
+        component: () => import('@/view/directive/myTypeManager.vue')
       }
     ]
   },

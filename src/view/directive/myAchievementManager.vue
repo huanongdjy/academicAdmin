@@ -450,9 +450,11 @@ export default {
     },
     mysearch () {
       searchaChievement(this.searchValue).then(res => {
-        if (res.data.resultCode === 200) {
-          this.tableData1 = []
-          this.tableData1.push(res.data.user)
+        if (res.data.resultCode === 200 && !(res.data.achievements.length === 0)) {
+          this.data1 = []
+          res.data.achievements.forEach(item => {
+            this.data1.push(item)
+          })
         } else {
           this.$Message.info('该成果名不存在')
         }

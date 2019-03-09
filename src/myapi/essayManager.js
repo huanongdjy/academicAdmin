@@ -23,9 +23,9 @@ export function getEssays (pageSize, currentPage, type) {
   })
 }
 
-export function searchaEssays (inputJson) {
+export function searchEssays (inputJson) {
   return axios({
-    url: '/searchaEssays',
+    url: '/searchEssays',
     method: 'post',
     data: inputJson,
     withCredentials: true

@@ -82,17 +82,21 @@ export default {
           password,
           identity
         }).then(res => {
-          // const data = res.data
-          // console.log(data)
-          commit('setToken', res.data.token)
-          const data = res.data.user
-          // commit('setAvator', data.avator)
-          commit('setUserName', data.username)
-          commit('setUserId', data.userId)
-          commit('setAccess', [data.identity.access])
-          commit('setHasGetInfo', true)
-          resolve(res)
-          resolve()
+          const data = res.data
+          if (data.resultCode === 200) {
+            commit('setToken', res.data.token)
+            const data = res.data.user
+            // commit('setAvator', data.avator)
+            commit('setUserName', data.username)
+            commit('setUserId', data.userId)
+            commit('setAccess', [data.identity.access])
+            commit('setHasGetInfo', true)
+            resolve(res)
+            resolve()
+          } else {
+            resolve(res)
+            resolve()
+          }
         }).catch(err => {
           reject(err)
         })
