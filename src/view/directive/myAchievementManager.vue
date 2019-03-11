@@ -10,7 +10,7 @@
         <Page :total="total" :current="currentPage" @on-change="changePage"></Page>
       </div>
     </div>
-    <Modal title="成果信息编辑" v-model="visibleUpdate">
+    <Modal title="成果信息编辑" v-model="visibleUpdate" width="1000px">
       <Form :model="formItem" :label-width="80" :rules="ruleValid" ref="formItem">
         <FormItem label="成果名称" prop="title">
           <Input v-model="formItem.title" placeholder="请输入..."></Input>
@@ -47,30 +47,33 @@
             </Col>
           </Row>
         </FormItem>
-        <FormItem label="类型" prop="type_id">
-          <select v-model="formItem.type_id">
-            <option value="1">类型A</option>
+        <FormItem label="类型"  prop="type_id">
+          <select v-model="formAdd.type_id" v-for="type in typeList" :key="type.type_id">
+            <option :value="type_id">{{ type.type_name }}</option>
           </select>
         </FormItem>
-        <!-- <FormItem label="Radio">
-          <RadioGroup v-model="formItem.radio">
-            <Radio label="male">Male</Radio>
-            <Radio label="female">Female</Radio>
-          </RadioGroup>
-        </FormItem> -->
         <FormItem label="是否显示">
           <i-switch v-model="formItem.toshow" size="large">
             <span slot="open">On</span>
             <span slot="close">Off</span>
           </i-switch>
         </FormItem>
-        <!-- <FormItem label="Slider">
-          <Slider v-model="formItem.slider" range></Slider>
-        </FormItem> -->
-        <FormItem label="内容" prop="content">
-          <Input v-model="formItem.content" type="textarea" :autosize="{minRows: 2,maxRows: 5}" placeholder="Enter something..."></Input>
+        <FormItem label="已上传图片" v-if="uploadList.length > 0">
+          <div class="demo-upload-list" v-for="i in uploadList" :key="i.url">
+            <img :src="'http://localhost:8083/uploaded/'+ i.url">
+            <div class="demo-upload-list-cover">
+              <Icon type="ios-eye-outline" @click.native="handleView(i.url)"></Icon>
+              <Icon type="ios-trash-outline" @click.native="handleRemove(i)"></Icon>
+            </div>
+          </div>
         </FormItem>
-        <FormItem label="图片">
+        <FormItem>
+          <quillEditor v-model="formItem.content"
+            ref="myQuillEditor"
+            :options="editorOption">
+          </quillEditor>
+        </FormItem>
+        <!-- <FormItem label="图片">
           <div class="demo-upload-list" v-for="item in formItem.photoList" :key="item.url">
             <img :src="'http://localhost:8083/uploaded/'+ item.url">
             <div class="demo-upload-list-cover">
@@ -102,14 +105,14 @@
                 <Icon type="ios-camera" size="20"></Icon>
             </div>
           </Upload>
-        </FormItem>
+        </FormItem> -->
       </Form>
       <div slot="footer">
         <Button type="text" size="large" @click="cancel">取消</Button>
         <Button type="primary" size="large"  @click="ok">确定</Button>
       </div>
     </Modal>
-    <Modal title="新增成果" v-model="visibleAdd" >
+    <Modal title="新增成果" v-model="visibleAdd" width="1000px">
       <Form :model="formAdd" :label-width="80" :rules="ruleValid" ref="formAdd">
         <FormItem label="成果名称" prop="title">
           <Input v-model="formAdd.title" placeholder="请输入..."></Input>
@@ -147,38 +150,35 @@
           </Row>
         </FormItem>
         <FormItem label="类型"  prop="type_id">
-          <select v-model="formAdd.type_id">
-            <option value="1">类型A</option>
+          <select v-model="formAdd.type_id" v-for="type in typeList" :key="type.type_id">
+            <option :value="type.type_id">{{ type.type_name }}</option>
           </select>
         </FormItem>
-        <!-- <FormItem label="Radio">
-          <RadioGroup v-model="formItem.radio">
-            <Radio label="male">Male</Radio>
-            <Radio label="female">Female</Radio>
-          </RadioGroup>
-        </FormItem> -->
         <FormItem label="是否显示">
           <i-switch v-model="formAdd.toshow" size="large">
             <span slot="open">On</span>
             <span slot="close">Off</span>
           </i-switch>
         </FormItem>
-        <!-- <FormItem label="Slider">
-          <Slider v-model="formItem.slider" range></Slider>
-        </FormItem> -->
-        <FormItem label="内容" prop="content">
+        <!-- <FormItem label="内容" prop="content">
           <Input v-model="formAdd.content" type="textarea" :autosize="{minRows: 2,maxRows: 5}" placeholder="请输入..."></Input>
-        </FormItem>
-        <!-- <FormItem label="已上传图片" v-if="formAdd.photoList.length > 0">
-          <div class="demo-upload-list" v-for="item in formAdd.photoList" :key="item.url">
-            <img :src="'http://localhost:8083/uploaded/'+ item.url">
+        </FormItem> -->
+        <FormItem label="已上传图片" v-if="uploadList.length > 0">
+          <div class="demo-upload-list" v-for="i in uploadList" :key="i.url">
+            <img :src="'http://localhost:8083/uploaded/'+ i.url">
             <div class="demo-upload-list-cover">
-              <Icon type="ios-eye-outline" @click.native="handleView(item.url)"></Icon>
-              <Icon type="ios-trash-outline" @click.native="handleRemove(item)"></Icon>
+              <Icon type="ios-eye-outline" @click.native="handleView(i.url)"></Icon>
+              <Icon type="ios-trash-outline" @click.native="handleRemove(i)"></Icon>
             </div>
           </div>
-        </FormItem> -->
-        <FormItem label="上传图片">
+        </FormItem>
+        <FormItem>
+          <quillEditor v-model="formAdd.content"
+            ref="myQuillEditor"
+            :options="editorOption">
+          </quillEditor>
+        </FormItem>
+        <!-- <FormItem label="上传图片">
           <div class="demo-upload-list" v-for="i in uploadList" :key="i.url">
             <img :src="'http://localhost:8083/uploaded/'+ i.url">
             <div class="demo-upload-list-cover">
@@ -204,7 +204,7 @@
                 <Icon type="ios-camera" size="20"></Icon>
             </div>
           </Upload>
-        </FormItem>
+        </FormItem> -->
       </Form>
       <div slot="footer">
         <Button type="text" size="large" @click="cancel">取消</Button>
@@ -217,11 +217,21 @@
   </div>
 </template>
 <script>
+import 'quill/dist/quill.core.css'
+import 'quill/dist/quill.snow.css'
+import 'quill/dist/quill.bubble.css'
+import { quillEditor, Quill } from 'vue-quill-editor'
+import { container, ImageExtend, QuillWatch } from 'quill-image-extend-module'
 import expandRow from './table-expand.vue'
 import { getToken } from '@/libs/util'
 import { getAchievement, updateAchievement, deletePhotos, addAchievement, deleteAchievement, searchaChievement } from '@/myapi/achievementManager'
+import { getAllType } from '@/myapi/typeManager'
+Quill.register('modules/ImageExtend', ImageExtend)
 export default {
-  components: { expandRow },
+  components: {
+    expandRow,
+    quillEditor
+  },
   data () {
     const validateTitle = (rule, value, callback) => {
       if (value === '') {
@@ -273,6 +283,7 @@ export default {
       }
     }
     return {
+      typeList: [],
       searchValue: '',
       currentPage: 1,
       total: 0,
@@ -431,6 +442,33 @@ export default {
       },
       header: {
         Authorization: getToken()
+      },
+      token: getToken(),
+      editorOption: {
+        modules: {
+          ImageExtend: {
+            loading: true,
+            name: 'file',
+            size: 2,
+            action: 'http://localhost:8083/uploadPhoto',
+            response: (res) => {
+              this.uploadList.push({ 'url': res.url })
+              return 'http://localhost:8083/uploaded/' + res.url
+            },
+            headers: (xhr) => {
+              xhr.withCredentials = true
+              xhr.setRequestHeader('Authorization', this.token)
+            }
+          },
+          toolbar: {
+            container: container,
+            handlers: {
+              'image': function () {
+                QuillWatch.emit(this.quill.id)
+              }
+            }
+          }
+        }
       }
     }
   },
@@ -610,6 +648,14 @@ export default {
         this.total = data.total
         this.currentPage = data.pageNum
       }
+    })
+    getAllType().then(res => {
+      if (res.data.resultCode === 200) {
+        res.data.typeList.forEach(element => {
+          this.typeList.push(element)
+        })
+      }
+      console.log(this.typeList)
     })
   }
 }

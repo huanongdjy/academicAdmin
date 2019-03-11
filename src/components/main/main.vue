@@ -41,8 +41,8 @@ import TagsNav from './components/tags-nav'
 import User from './components/user'
 import ABackTop from './components/a-back-top'
 import Fullscreen from './components/fullscreen'
-import Language from './components/language'
-import ErrorStore from './components/error-store'
+// import Language from './components/language'
+// import ErrorStore from './components/error-store'
 import { mapMutations, mapActions, mapGetters } from 'vuex'
 import { getNewTagList, routeEqual } from '@/libs/util'
 import routers from '@/router/routers'
@@ -54,10 +54,8 @@ export default {
   components: {
     SideMenu,
     HeaderBar,
-    Language,
     TagsNav,
     Fullscreen,
-    ErrorStore,
     User,
     ABackTop
   },

@@ -1,7 +1,7 @@
 <template>
   <div>
-    <Button type="primary" class="mybutton" @click="add">新增文章</Button>
-    <Input search placeholder="请输入文章名称" class="search" v-model="searchValue" @on-search="mysearch">
+    <Button type="primary" class="mybutton" @click="add">新增活动</Button>
+    <Input search placeholder="请输入活动名称" class="search" v-model="searchValue" @on-search="mysearch">
       <Icon type="ios-search" slot="suffix" />
     </Input>
     <Table :columns="columns" :data="data1"></Table>
@@ -10,15 +10,113 @@
         <Page :total="total" :current="currentPage" @on-change="changePage"></Page>
       </div>
     </div>
-    <Modal title="新增文章" v-model="visibleAdd" >
-      <editor ref="myeditor" @changeVisible="changeVisible" :tomethod="addmethod"></editor>
+    <Modal title="新增活动" v-model="visibleAdd" width="1000px">
+      <Form ref="editValue" :label-width="100" :model="editValue" :rules="ruleValid">
+        <FormItem label="标题" prop="title">
+          <Input v-model="editValue.title" placeholder="请输入..."></Input>
+        </FormItem>
+        <FormItem label="类型" prop="type_id">
+          <select v-model="editValue.type_id" v-for="type in typeList" :key="type.type_id">
+            <option :value="type.type_id">{{ type.type_name }}</option>
+          </select>
+        </FormItem>
+        <FormItem label="摘要" prop="summary">
+          <Input v-model="editValue.summary" placeholder="请输入..."></Input>
+        </FormItem>
+        <FormItem label="举办者" prop="organizer">
+          <Input v-model="editValue.organizer" placeholder="请输入..."></Input>
+        </FormItem>
+        <FormItem label="举办地点" prop="location">
+          <Input v-model="editValue.location" placeholder="请输入..."></Input>
+        </FormItem>
+        <FormItem label="举办时间">
+          <Row>
+            <Col span="11">
+              <FormItem prop="date">
+                <DatePicker type="date" placeholder="选中日期" v-model="editValue.date"></DatePicker>
+              </FormItem>
+            </Col>
+            <Col span="1" style="text-align: center" class="mycolum">-</Col>
+            <Col span="11">
+              <FormItem prop="time">
+                <TimePicker type="time" placeholder="选择时间" v-model="editValue.time"></TimePicker>
+              </FormItem>
+            </Col>
+          </Row>
+        </FormItem>
+        <FormItem label="所需资金" prop="fund">
+          <Input v-model="editValue.fund" placeholder="请输入..."></Input>
+        </FormItem>
+        <FormItem label="容纳人数" prop="planned_attendance">
+          <Input v-model="editValue.planned_attendance" placeholder="请输入..."></Input>
+        </FormItem>
+        <FormItem>
+          <quillEditor v-model="editValue.content"
+            ref="myQuillEditor"
+            :options="editorOption">
+          </quillEditor>
+        </FormItem>
+        <FormItem>
+          <!-- <Button type="primary" @click="handleSubmit()">提交</Button>
+          <Button @click="handleReset('formValidate')" style="margin-left: 8px">重置</Button> -->
+        </FormItem>
+      </Form>
       <div slot="footer">
         <Button type="text" size="large" @click="cancel">取消</Button>
         <Button type="primary" size="large"  @click="ok">确定</Button>
       </div>
     </Modal>
-    <Modal title="编辑文章" v-model="visibleUpdate" >
-      <editor ref="myeditor" @changeVisible="changeVisible" @updatePage="updatePage" :editValue="editValue" :tomethod="updatemethod"></editor>
+    <Modal title="编辑活动" v-model="visibleUpdate" width="1000px">
+      <Form ref="editValue" :label-width="100" :model="editValue" :rules="ruleValid">
+        <FormItem label="标题" prop="title">
+          <Input v-model="editValue.title" placeholder="请输入..."></Input>
+        </FormItem>
+        <FormItem label="类型" prop="type_id">
+          <select v-model="editValue.type_id" v-for="type in typeList" :key="type.type_id">
+            <option :value="type.type_id">{{ type.type_name }}</option>
+          </select>
+        </FormItem>
+        <FormItem label="摘要" prop="summary">
+          <Input v-model="editValue.summary" placeholder="请输入..."></Input>
+        </FormItem>
+        <FormItem label="举办者" prop="organizer">
+          <Input v-model="editValue.organizer" placeholder="请输入..."></Input>
+        </FormItem>
+        <FormItem label="举办地点" prop="location">
+          <Input v-model="editValue.location" placeholder="请输入..."></Input>
+        </FormItem>
+        <FormItem label="举办时间">
+          <Row>
+            <Col span="11">
+              <FormItem prop="date">
+                <DatePicker type="date" placeholder="选中日期" v-model="editValue.date"></DatePicker>
+              </FormItem>
+            </Col>
+            <Col span="1" style="text-align: center" class="mycolum">-</Col>
+            <Col span="11">
+              <FormItem prop="time">
+                <TimePicker type="time" placeholder="选择时间" v-model="editValue.time"></TimePicker>
+              </FormItem>
+            </Col>
+          </Row>
+        </FormItem>
+        <FormItem label="所需资金" prop="fund">
+          <Input v-model="editValue.fund" placeholder="请输入..."></Input>
+        </FormItem>
+        <FormItem label="容纳人数" prop="planned_attendance">
+          <Input v-model="editValue.planned_attendance" placeholder="请输入..."></Input>
+        </FormItem>
+        <FormItem>
+          <quillEditor v-model="editValue.content"
+            ref="myQuillEditor"
+            :options="editorOption">
+          </quillEditor>
+        </FormItem>
+        <FormItem>
+          <!-- <Button type="primary" @click="handleSubmit()">提交</Button>
+          <Button @click="handleReset('formValidate')" style="margin-left: 8px">重置</Button> -->
+        </FormItem>
+      </Form>
       <div slot="footer">
         <Button type="text" size="large" @click="cancel">取消</Button>
         <Button type="primary" size="large"  @click="ok">确定</Button>
@@ -31,15 +129,95 @@
 </template>
 <script>
 import expandRow from './essay-expand.vue'
-import editor from './editor.vue'
-import { getEssays, deleteEssay, searchEssays } from '@/myapi/essayManager'
+import { getEssays, deleteEssay, searchEssays, addEssay, updateEssay } from '@/myapi/essayManager'
 import { getAllType } from '@/myapi/typeManager'
+import 'quill/dist/quill.core.css'
+import 'quill/dist/quill.snow.css'
+import 'quill/dist/quill.bubble.css'
+import { quillEditor, Quill } from 'vue-quill-editor'
+import { container, ImageExtend, QuillWatch } from 'quill-image-extend-module'
+import { getToken } from '@/libs/util'
+Quill.register('modules/ImageExtend', ImageExtend)
 export default {
   components: {
     expandRow,
-    editor
+    quillEditor
   },
   data () {
+    const validateTitle = (rule, value, callback) => {
+      if (value === '') {
+        callback(new Error('请输入名称'))
+      } else {
+        callback()
+      }
+    }
+    const validateSummary = (rule, value, callback) => {
+      if (value === '') {
+        callback(new Error('请输入摘要'))
+      } else {
+        callback()
+      }
+    }
+    const validateContent = (rule, value, callback) => {
+      if (value === '') {
+        callback(new Error('请输入内容'))
+      } else {
+        callback()
+      }
+    }
+    const validateTime = (rule, value, callback) => {
+      if (value === '') {
+        callback(new Error('请选择时间'))
+      } else {
+        callback()
+      }
+    }
+    const validateDate = (rule, value, callback) => {
+      if (value === '') {
+        callback(new Error('请输入日期'))
+      } else {
+        callback()
+      }
+    }
+    const validateType_id = (rule, value, callback) => {
+      if (value === '') {
+        callback(new Error('请选择类型'))
+      } else {
+        callback()
+      }
+    }
+    const validateLocation = (rule, value, callback) => {
+      if (value === '') {
+        callback(new Error('请输入举办地点'))
+      } else {
+        callback()
+      }
+    }
+    const validateFund = (rule, value, callback) => {
+      if (value === '') {
+        callback(new Error('请输入举办所需资金'))
+      } else if (!/^[a-z0-9]+$/.test(value)) {
+        callback(new Error('请输入数字'))
+      } else {
+        callback()
+      }
+    }
+    const validateOrganizer = (rule, value, callback) => {
+      if (value === '') {
+        callback(new Error('请输入举办者'))
+      } else {
+        callback()
+      }
+    }
+    const validatePlanned_attendance = (rule, value, callback) => {
+      if (value === '') {
+        callback(new Error('可容纳人数'))
+      } else if (!/^[a-z0-9]+$/.test(value)) {
+        callback(new Error('请输入数字'))
+      } else {
+        callback()
+      }
+    }
     return {
       updatemethod: 'update',
       addmethod: 'add',
@@ -177,6 +355,65 @@ export default {
         // checkbox: [],
         // slider: [20, 50],
         // textarea: ''
+      },
+      token: getToken(),
+      ruleValid: {
+        title: [
+          { validator: validateTitle, trigger: 'blur' }
+        ],
+        summary: [
+          { validator: validateSummary, trigger: 'blur' }
+        ],
+        content: [
+          { validator: validateContent, trigger: 'blur' }
+        ],
+        time: [
+          { validator: validateTime, trigger: 'blur' }
+        ],
+        date: [
+          { validator: validateDate, trigger: 'blur' }
+        ],
+        type_id: [
+          { validator: validateType_id, trigger: 'blur' }
+        ],
+        location: [
+          { validator: validateLocation, trigger: 'blur' }
+        ],
+        fund: [
+          { validator: validateFund, trigger: 'blur' }
+        ],
+        organizer: [
+          { validator: validateOrganizer, trigger: 'blur' }
+        ],
+        planned_attendance: [
+          { validator: validatePlanned_attendance, trigger: 'blur' }
+        ]
+      },
+      editorOption: {
+        modules: {
+          ImageExtend: {
+            loading: true,
+            name: 'file',
+            size: 2,
+            action: 'http://localhost:8083/uploadPhoto',
+            response: (res) => {
+              this.uploadList.push({ 'url': res.url })
+              return 'http://localhost:8083/uploaded/' + res.url
+            },
+            headers: (xhr) => {
+              xhr.withCredentials = true
+              xhr.setRequestHeader('Authorization', this.token)
+            }
+          },
+          toolbar: {
+            container: container,
+            handlers: {
+              'image': function () {
+                QuillWatch.emit(this.quill.id)
+              }
+            }
+          }
+        }
       }
     }
   },
@@ -215,7 +452,7 @@ export default {
             this.data1.push(item)
           })
         } else {
-          this.$Message.info('该文章名不存在')
+          this.$Message.info('该活动名不存在')
         }
       })
     },
@@ -235,9 +472,11 @@ export default {
       this.editValue.date = this.data1[index].hold_time.slice(0, 10)
       this.editValue.time = this.data1[index].hold_time.slice(11, 19)
       this.editValue.content = this.data1[index].content
-      this.data1[index].photoList.forEach(item => {
-        this.editValue.photoList.push(item)
-      })
+      if (!(this.data1[index].photoList === 0)) {
+        this.data1[index].photoList.forEach(item => {
+          this.editValue.photoList.push(item)
+        })
+      }
     },
     remove (index) {
       deleteEssay(this.data1[index].id).then(res => {
@@ -246,19 +485,71 @@ export default {
           // this.tableData1.splice(index, 1)
           this.changePage(this.currentPage)
         } else {
-          this.$Message.info('删除文章失败')
+          this.$Message.info('删除活动失败')
         }
       })
     },
     add () {
       this.visibleAdd = true
+      this.tomethod = 'add'
+      this.editValue.id = ''
+      this.editValue.title = ''
+      this.editValue.theme = ''
+      this.editValue.summary = ''
+      this.editValue.location = ''
+      this.editValue.fund = ''
+      this.editValue.organizer = ''
+      this.editValue.planned_attendance = ''
+      this.editValue.type_id = ''
+      this.editValue.date = ''
+      this.editValue.time = ''
+      this.editValue.content = ''
+      this.editValue.photoList = []
     },
     cancel () {
       this.visibleAdd = false
       this.visibleUpdate = false
     },
     ok () {
-      this.$refs.myeditor.handleSubmit()
+      this.$refs['editValue'].validate(vaild => {
+        console.log(this.editValue.type_id)
+        if (vaild) {
+          if (!(this.uploadList.length === 0)) {
+            this.uploadList.forEach(item => {
+              this.editValue.photoList.push(item)
+            })
+          }
+          if (this.tomethod === 'add') {
+            addEssay(this.editValue).then(res => {
+              if (res.data.resultCode === 200) {
+                // this.data1 = []
+                // get(10, this.currentPage, 'achievements').then(res1 => {
+                //   let data = res1.data.page
+                //   if (res1.data.resultCode === '200') {
+                //     data.list.forEach(element => {
+                //       this.data1.push(element)
+                //     })
+                //     this.total = data.total
+                //     this.currentPage = data.pageNum
+                //   }
+                // })
+                this.$Message.info(res.data.message)
+              }
+            })
+          } else if (this.tomethod === 'update') {
+            updateEssay(this.editValue).then(res => {
+              if (res.data.resultCode === 200) {
+                this.$Message.info(res.data.message)
+              }
+            })
+          }
+          this.cancel()
+          this.updatePage()
+          this.uploadList = []
+        } else {
+          return false
+        }
+      })
     },
     changeVisible (bol) {
       this.visibleAdd = bol
@@ -277,8 +568,12 @@ export default {
       }
     })
     getAllType().then(res => {
+      console.log(res)
       let data = res.data
-      typeList = data // 添加文章获取类型
+      data.typeList.forEach(item => {
+        this.typeList.push(item)
+      })
+      console.log(typeList)
     })
   }
 }

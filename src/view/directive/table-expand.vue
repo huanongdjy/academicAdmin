@@ -8,7 +8,7 @@
     <Row class="expand-row">
       <Col span="24">
         <span class="expand-key">内容: </span>
-        <span class="expand-value">{{ row.content }}</span>
+        <span class="expand-value" v-html="row.content">{{ row.content }}</span>
       </Col>
     </Row>
     <!-- <Row class="expand-row">

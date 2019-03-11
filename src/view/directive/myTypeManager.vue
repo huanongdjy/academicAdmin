@@ -184,7 +184,9 @@ export default {
       searchType(this.searchValue).then(res => {
         if (res.data.resultCode === 200 && !(res.data.essays.length === 0)) {
           this.tableData1 = []
-          this.tableData1.push(res.data.essays)
+          res.data.essays.forEach(item => {
+            this.tableData1.push(item)
+          })
         } else {
           this.$Message.info('该类型名称不存在')
         }

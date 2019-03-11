@@ -7,7 +7,6 @@ import store from './store'
 import iView from 'iview'
 import i18n from '@/locale'
 import config from '@/config'
-import importDirective from '@/directive'
 import { directive as clickOutside } from 'v-click-outside-x'
 import installPlugin from '@/plugin'
 import './index.less'
@@ -39,7 +38,6 @@ Vue.prototype.$config = config
 /**
  * 注册指令
  */
-importDirective(Vue)
 Vue.directive('clickOutside', clickOutside)
 
 /* eslint-disable no-new */

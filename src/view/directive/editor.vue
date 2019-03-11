@@ -1,55 +1,3 @@
-<template>
-<Form ref="editValue" :label-width="100" :model="editValue" :rules="ruleValid">
-  <FormItem label="标题" prop="title">
-    <Input v-model="editValue.title" placeholder="请输入..."></Input>
-  </FormItem>
-  <FormItem label="类型" prop="type_id">
-    <select v-model="editValue.type_id">
-      <option value="1">1</option>
-    </select>
-  </FormItem>
-  <FormItem label="摘要" prop="summary">
-    <Input v-model="editValue.summary" placeholder="请输入..."></Input>
-  </FormItem>
-  <FormItem label="举办者" prop="organizer">
-    <Input v-model="editValue.organizer" placeholder="请输入..."></Input>
-  </FormItem>
-  <FormItem label="举办地点" prop="location">
-    <Input v-model="editValue.location" placeholder="请输入..."></Input>
-  </FormItem>
-  <FormItem label="举办时间">
-    <Row>
-      <Col span="11">
-        <FormItem prop="date">
-          <DatePicker type="date" placeholder="选中日期" v-model="editValue.date"></DatePicker>
-        </FormItem>
-      </Col>
-      <Col span="1" style="text-align: center" class="mycolum">-</Col>
-      <Col span="11">
-        <FormItem prop="time">
-          <TimePicker type="time" placeholder="选择时间" v-model="editValue.time"></TimePicker>
-        </FormItem>
-      </Col>
-    </Row>
-  </FormItem>
-  <FormItem label="所需资金" prop="fund">
-    <Input v-model="editValue.fund" placeholder="请输入..."></Input>
-  </FormItem>
-  <FormItem label="容纳人数" prop="planned_attendance">
-    <Input v-model="editValue.planned_attendance" placeholder="请输入..."></Input>
-  </FormItem>
-  <FormItem>
-    <quillEditor v-model="editValue.content"
-      ref="myQuillEditor"
-      :options="editorOption">
-    </quillEditor>
-  </FormItem>
-  <FormItem>
-    <!-- <Button type="primary" @click="handleSubmit()">提交</Button>
-    <Button @click="handleReset('formValidate')" style="margin-left: 8px">重置</Button> -->
-  </FormItem>
-</Form>
-</template>
 
 <script>
 import 'quill/dist/quill.core.css'
@@ -242,8 +190,8 @@ export default {
   methods: {
     handleSubmit () {
       this.$refs['editValue'].validate(vaild => {
+        console.log(this.editValue.content)
         if (vaild) {
-          console.log(this.tomethod)
           if (!(this.uploadList.length === 0)) {
             this.uploadList.forEach(item => {
               this.editValue.photoList.push(item)
