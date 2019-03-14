@@ -26,7 +26,10 @@ export default {
   },
   mounted () {
     this.$nextTick(() => {
-      let legend = this.value.map(_ => _.name)
+      let legend = this.value.map(_ => _.name)// 左上角值
+      console.log('legend')
+      console.log(legend)
+      // legend = legend + ':'
       let option = {
         title: {
           text: this.text,
@@ -35,7 +38,7 @@ export default {
         },
         tooltip: {
           trigger: 'item',
-          formatter: '{a} <br/>{b} : {c} ({d}%)'
+          formatter: '{b} : {c} ({d}%)'
         },
         legend: {
           orient: 'vertical',
@@ -63,8 +66,25 @@ export default {
       on(window, 'resize', this.resize)
     })
   },
+  // computed: {
+  //   valuechange () {
+  //     return this.value
+  //   }
+  // },
+  watch: {
+    value: {
+      handler (newValue, oldValue) {
+        this.value = newValue
+      },
+      deep: true
+    }
+  },
   beforeDestroy () {
     off(window, 'resize', this.resize)
   }
+  // created () {
+  //   console.log('created')
+  //   console.log(this.value)
+  // }
 }
 </script>

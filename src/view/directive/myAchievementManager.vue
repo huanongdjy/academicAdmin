@@ -49,7 +49,7 @@
         </FormItem>
         <FormItem label="类型"  prop="type_id">
           <select v-model="formAdd.type_id" v-for="type in typeList" :key="type.type_id">
-            <option :value="type_id">{{ type.type_name }}</option>
+            <option :value="type.type_id">{{ type.type_name }}</option>
           </select>
         </FormItem>
         <FormItem label="是否显示">

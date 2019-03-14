@@ -568,12 +568,10 @@ export default {
       }
     })
     getAllType().then(res => {
-      console.log(res)
       let data = res.data
       data.typeList.forEach(item => {
         this.typeList.push(item)
       })
-      console.log(typeList)
     })
   }
 }
