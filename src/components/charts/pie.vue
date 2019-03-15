@@ -26,44 +26,47 @@ export default {
   },
   mounted () {
     this.$nextTick(() => {
-      let legend = this.value.map(_ => _.name)// 左上角值
-      console.log('legend')
-      console.log(legend)
-      // legend = legend + ':'
-      let option = {
-        title: {
-          text: this.text,
-          subtext: this.subtext,
-          x: 'center'
-        },
-        tooltip: {
-          trigger: 'item',
-          formatter: '{b} : {c} ({d}%)'
-        },
-        legend: {
-          orient: 'vertical',
-          left: 'left',
-          data: legend
-        },
-        series: [
-          {
-            type: 'pie',
-            radius: '55%',
-            center: ['50%', '60%'],
-            data: this.value,
-            itemStyle: {
-              emphasis: {
-                shadowBlur: 10,
-                shadowOffsetX: 0,
-                shadowColor: 'rgba(0, 0, 0, 0.5)'
+      let legend = []
+      setTimeout(() => {
+        legend = this.value.map(_ => _.name)// 左上角值
+        console.log('legend')
+        console.log(legend)
+        // legend = legend + ':'
+        let option = {
+          title: {
+            text: this.text,
+            subtext: this.subtext,
+            x: 'center'
+          },
+          tooltip: {
+            trigger: 'item',
+            formatter: '{b} : {c} ({d}%)'
+          },
+          legend: {
+            orient: 'vertical',
+            left: 'left',
+            data: legend
+          },
+          series: [
+            {
+              type: 'pie',
+              radius: '55%',
+              center: ['50%', '60%'],
+              data: this.value,
+              itemStyle: {
+                emphasis: {
+                  shadowBlur: 10,
+                  shadowOffsetX: 0,
+                  shadowColor: 'rgba(0, 0, 0, 0.5)'
+                }
               }
             }
-          }
-        ]
-      }
-      this.dom = echarts.init(this.$refs.dom, 'tdTheme')
-      this.dom.setOption(option)
-      on(window, 'resize', this.resize)
+          ]
+        }
+        this.dom = echarts.init(this.$refs.dom, 'tdTheme')
+        this.dom.setOption(option)
+        on(window, 'resize', this.resize)
+      }, 1000)
     })
   },
   // computed: {
