@@ -171,7 +171,6 @@ export default {
       data.forEach(item => {
         this.pieData.push({ 'value': item.value, 'name': item.name })
       })
-      console.log(this.pieData)
     })
   }
 }
