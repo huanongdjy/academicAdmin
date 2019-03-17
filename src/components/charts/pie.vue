@@ -61,7 +61,6 @@ export default {
             this.value.push({ 'value': item.value, 'name': item.name })
           })
           this.dom.hideLoading()
-          console.log('this')
           legend = this.value.map(_ => _.name)// 左上角值
           option = {
             title: {
@@ -71,7 +70,7 @@ export default {
             },
             tooltip: {
               trigger: 'item',
-              formatter: '{b} : {c} ({d}%)'
+              formatter: '{b} : {c} ' // ({d}%)
             },
             legend: {
               orient: 'vertical',

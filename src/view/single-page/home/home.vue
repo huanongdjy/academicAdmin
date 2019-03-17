@@ -95,6 +95,16 @@ export default {
       console.log(value)
     },
     changeDate () {
+      getInforCardData(this.begTime, this.endTime).then(res => {
+        let data = res.data
+        if (data.resultCode === 200) {
+          let i = 0
+          res.data.list.forEach(element => {
+            this.inforCardData[i].count = element
+            i = i + 1
+          })
+        }
+      })
       getPieData(this.begTime, this.endTime).then(res => {
         let data = res.data
         if (data.resultCode === 200) {

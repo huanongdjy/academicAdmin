@@ -16,8 +16,8 @@
           <Input v-model="editValue.title" placeholder="请输入..."></Input>
         </FormItem>
         <FormItem label="类型" prop="type_id">
-          <select v-model="editValue.type_id" v-for="type in typeList" :key="type.type_id">
-            <option :value="type.type_id">{{ type.type_name }}</option>
+          <select v-model="editValue.type_id" >
+            <option v-for="type in typeList" :key="type.type_id" :value="type.type_id">{{ type.type_name }}</option>
           </select>
         </FormItem>
         <FormItem label="摘要" prop="summary">
@@ -72,8 +72,8 @@
           <Input v-model="editValue.title" placeholder="请输入..."></Input>
         </FormItem>
         <FormItem label="类型" prop="type_id">
-          <select v-model="editValue.type_id" v-for="type in typeList" :key="type.type_id">
-            <option :value="type.type_id">{{ type.type_name }}</option>
+          <select v-model="editValue.type_id">
+            <option v-for="type in typeList" :key="type.type_id" :value="type.type_id">{{ type.type_name }}</option>
           </select>
         </FormItem>
         <FormItem label="摘要" prop="summary">
