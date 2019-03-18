@@ -6,7 +6,7 @@
 import echarts from 'echarts'
 import tdTheme from './theme.json'
 import { on, off } from '@/libs/tools'
-import { getPieData } from '@/myapi/analysis'
+import { getEssayPieData } from '@/myapi/analysis'
 echarts.registerTheme('tdTheme', tdTheme)
 export default {
   name: 'ChartPie',
@@ -17,7 +17,8 @@ export default {
   },
   data () {
     return {
-      dom: null
+      dom: null,
+      tip: ''
     }
   },
   methods: {
@@ -43,59 +44,66 @@ export default {
       m = m < 10 ? '0' + m : m
       d = d < 10 ? ('0' + d) : d
       return y + '-' + m + '-' + d
+    },
+    setOption () {
+      let option = {}
+      let legend = []
+      this.dom.hideLoading()
+      legend = this.value.map(_ => _.name)// 左上角值
+      option = {
+        title: {
+          text: this.text,
+          subtext: this.subtext,
+          x: 'center'
+        },
+        tooltip: {
+          trigger: 'item',
+          formatter: function (params) {
+            return params.data.tip
+          }
+        },
+        legend: {
+          orient: 'vertical',
+          left: 'left',
+          data: legend
+        },
+        series: [
+          {
+            type: 'pie',
+            radius: '55%',
+            center: ['50%', '60%'],
+            data: this.value,
+            itemStyle: {
+              emphasis: {
+                shadowBlur: 10,
+                shadowOffsetX: 0,
+                shadowColor: 'rgba(0, 0, 0, 0.5)'
+              }
+            }
+          }
+        ]
+      }
+      this.dom = echarts.init(this.$refs.dom, 'tdTheme')
+      this.dom.setOption(option)
+      on(window, 'resize', this.resize)
     }
   },
   mounted () {
     this.$nextTick(() => {
       this.dom = echarts.init(this.$refs.dom, 'tdTheme')
       this.dom.showLoading()
-      let legend = []
-      let option = {}
+      // let legend = []
+      // let option = {}
       let thedate = this.getToday()
       let aftdate = this.getAfterDay()
-      getPieData(thedate, aftdate).then(res => {
+      getEssayPieData(thedate, aftdate).then(res => {
         setTimeout(() => {
           let data = res.data
-          this.value = []
+          this.value.splice(0, this.value.length)
           data.forEach(item => {
-            this.value.push({ 'value': item.value, 'name': item.name })
+            this.value.push({ 'value': item.value, 'name': item.name, 'tip': item.tip })
           })
-          this.dom.hideLoading()
-          legend = this.value.map(_ => _.name)// 左上角值
-          option = {
-            title: {
-              text: this.text,
-              subtext: this.subtext,
-              x: 'center'
-            },
-            tooltip: {
-              trigger: 'item',
-              formatter: '{b} : {c} ' // ({d}%)
-            },
-            legend: {
-              orient: 'vertical',
-              left: 'left',
-              data: legend
-            },
-            series: [
-              {
-                type: 'pie',
-                radius: '55%',
-                center: ['50%', '60%'],
-                data: this.value,
-                itemStyle: {
-                  emphasis: {
-                    shadowBlur: 10,
-                    shadowOffsetX: 0,
-                    shadowColor: 'rgba(0, 0, 0, 0.5)'
-                  }
-                }
-              }
-            ]
-          }
-          this.dom = echarts.init(this.$refs.dom, 'tdTheme')
-          this.dom.setOption(option)
-          on(window, 'resize', this.resize)
+          this.setOption(this.value)
         }, 1000)
       })
     })
@@ -108,8 +116,15 @@ export default {
   watch: {
     value: {
       handler (newValue, oldValue) {
-        this.value = newValue
+        if (this.dom) {
+          if (newValue) {
+            this.setOption()
+          } else {
+            this.setOption()
+          }
+        }
       },
+      immediate: true,
       deep: true
     }
   },

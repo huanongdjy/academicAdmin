@@ -19,58 +19,54 @@
     <Row :gutter="20" style="margin-top: 10px;">
       <i-col :md="24" :lg="8" style="margin-bottom: 20px;">
         <Card shadow>
-          <chart-pie style="height: 300px;" :value="pieData" text="活动"></chart-pie>
+          <chart-attendance-pie style="height: 300px;" :value="pieData" text="参加人数"></chart-attendance-pie>
         </Card>
       </i-col>
       <i-col :md="24" :lg="8" style="margin-bottom: 20px;">
         <Card shadow>
-          <chart-pie style="height: 300px;" :value="pieData" text="成果"></chart-pie>
+          <achievement-pie style="height: 300px;" :value="pieData" text="成果"></achievement-pie>
         </Card>
       </i-col>
-      <!-- <i-col :md="24" :lg="16" style="margin-bottom: 20px;">
-        <Card shadow>
-          <chart-bar style="height: 300px;" :value="barData" text="每周用户活跃量"/>
-        </Card>
-      </i-col> -->
     </Row>
-    <Row>
+    <!-- <Row>
       <Card shadow>
         <lineChart style="height: 310px;"/>
       </Card>
-    </Row>
+    </Row> -->
   </div>
 </template>
 
 <script>
 import InforCard from '_c/info-card'
 import CountTo from '_c/count-to'
-import { ChartPie, ChartBar } from '_c/charts'
-import lineChart from './lineChart.vue'
-import { getInforCardData, getPieData } from '@/myapi/analysis'
+import { ChartAttendancePie, ChartBar, achievementPie } from '_c/charts'
+// import lineChart from './lineChart.vue'
+import { getInforCardData, getEssayPieData } from '@/myapi/analysis'
 export default {
   name: 'home',
   components: {
     InforCard,
     CountTo,
-    ChartPie,
+    ChartAttendancePie,
     ChartBar,
-    lineChart
+    achievementPie
+    // lineChart
   },
   data () {
     return {
-      model: '今日',
+      model: '今日之内',
       list: [
         {
-          value: '今日',
-          label: '今日'
+          value: '今日之内',
+          label: '今日之内'
         },
         {
-          value: '一周',
-          label: '一周'
+          value: '一周之内',
+          label: '一周之内'
         },
         {
-          value: '一个月',
-          label: '一个月'
+          value: '一个月之内',
+          label: '一个月之内'
         }
       ],
       begTime: '12',
@@ -92,10 +88,37 @@ export default {
   },
   methods: {
     changeoption (value) {
-      console.log(value)
+      let today = this.getToday()
+      if (value === '今日之内') {
+        let aftdate = this.getAfterDay()
+        this._getInforCardData(today, aftdate)
+        this._getAttendanceNumPieData(today, aftdate)
+        this.begTime = today
+        this.endTime = aftdate
+      } else if (value === '一周之内') {
+        let prevweek = this.getPrevWeek()
+        this._getInforCardData(prevweek, today)
+        this._getAttendanceNumPieData(prevweek, today)
+        this.begTime = prevweek
+        this.endTime = today
+      } else if (value === '一个月之内') {
+        let prevMonth = this.getPrevMonth()
+        this._getInforCardData(prevMonth, today)
+        this._getAttendanceNumPieData(prevMonth, today)
+        this.begTime = prevMonth
+        this.endTime = today
+      }
     },
     changeDate () {
-      getInforCardData(this.begTime, this.endTime).then(res => {
+      if (this.endTime > this.begTime) {
+        this._getInforCardData(this.begTime, this.endTime)
+        this._getAttendanceNumPieData(this.begTime, this.endTime)
+      } else {
+        this.$Message.warning('结束日期要大于开始日期')
+      }
+    },
+    _getInforCardData (begTime, endTime) {
+      getInforCardData(begTime, endTime).then(res => {
         let data = res.data
         if (data.resultCode === 200) {
           let i = 0
@@ -105,15 +128,14 @@ export default {
           })
         }
       })
-      getPieData(this.begTime, this.endTime).then(res => {
+    },
+    _getAttendanceNumPieData (begTime, endTime) {
+      getEssayPieData(begTime, endTime).then(res => {
         let data = res.data
-        if (data.resultCode === 200) {
-          let i = 0
-          res.data.list.forEach(element => {
-            this.inforCardData[i].count = element
-            i = i + 1
-          })
-        }
+        this.pieData.splice(0, this.pieData.length)
+        data.forEach(element => {
+          this.pieData.push({ 'value': element.value, 'name': element.name, 'tip': element.tip })
+        })
       })
     },
     changeBegTime (e) {
@@ -121,6 +143,9 @@ export default {
     },
     changeEndTime (e) {
       this.endTime = e
+      if (this.endTime <= this.begTime) {
+        this.$Message.warning('结束日期要大于开始日期')
+      }
     },
     getToday () {
       var nowdate = new Date()
@@ -176,12 +201,12 @@ export default {
         })
       }
     })
-    getPieData(thedate, aftdate).then(res => {
-      let data = res.data
-      data.forEach(item => {
-        this.pieData.push({ 'value': item.value, 'name': item.name })
-      })
-    })
+    // getPieData(thedate, aftdate).then(res => {
+    //   let data = res.data
+    //   data.forEach(item => {
+    //     this.pieData.push({ 'value': item.value, 'name': item.name })
+    //   })
+    // })
   }
 }
 </script>

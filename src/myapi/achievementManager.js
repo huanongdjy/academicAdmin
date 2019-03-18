@@ -73,3 +73,16 @@ export function searchaChievement (inputJson) {
     withCredentials: true
   })
 }
+
+export function changeAchievementToshow (id, toshow) {
+  var inputJson = {
+    id,
+    toshow
+  }
+  return axios({
+    url: '/changeAchievementToshow',
+    method: 'post',
+    data: inputJson,
+    withCredentials: true
+  })
+}

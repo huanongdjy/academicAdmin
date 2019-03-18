@@ -49,3 +49,16 @@ export function updateEssay (inputJson) {
     withCredentials: true
   })
 }
+
+export function changeEssayToshow (id, toshow) {
+  var inputJson = {
+    id,
+    toshow
+  }
+  return axios({
+    url: '/changeEssayToshow',
+    method: 'post',
+    data: inputJson,
+    withCredentials: true
+  })
+}

@@ -129,7 +129,7 @@
 </template>
 <script>
 import expandRow from './essay-expand.vue'
-import { getEssays, deleteEssay, searchEssays, addEssay, updateEssay } from '@/myapi/essayManager'
+import { getEssays, deleteEssay, searchEssays, addEssay, updateEssay, changeEssayToshow } from '@/myapi/essayManager'
 import { getAllType } from '@/myapi/typeManager'
 import 'quill/dist/quill.core.css'
 import 'quill/dist/quill.snow.css'
@@ -292,8 +292,8 @@ export default {
                     params.row.toshow = false
                   }
                 },
-                'on-change': function () {
-                  // _this.functionFun() // 方法自定义
+                'on-change': () => {
+                  this._changeToshow(params.row.id, params.row.toshow)
                 }
               }
             })
@@ -418,6 +418,11 @@ export default {
     }
   },
   methods: {
+    _changeToshow (id, toshow) {
+      changeEssayToshow(id, toshow).then(res => {
+        this.$Message.warning(res.data.message)
+      })
+    },
     changePage (index) {
       getEssays(10, index, 'activity').then(res => {
         let data = res.data.page
@@ -522,23 +527,34 @@ export default {
           if (this.tomethod === 'add') {
             addEssay(this.editValue).then(res => {
               if (res.data.resultCode === 200) {
-                // this.data1 = []
-                // get(10, this.currentPage, 'achievements').then(res1 => {
-                //   let data = res1.data.page
-                //   if (res1.data.resultCode === '200') {
-                //     data.list.forEach(element => {
-                //       this.data1.push(element)
-                //     })
-                //     this.total = data.total
-                //     this.currentPage = data.pageNum
-                //   }
-                // })
+                this.data1 = []
+                getEssays(10, 1, 'activity').then(res => {
+                  let data = res.data.page
+                  if (res.data.resultCode === '200') {
+                    data.list.forEach(element => {
+                      this.data1.push(element)
+                    })
+                    this.total = data.total
+                    this.currentPage = data.pageNum
+                  }
+                })
                 this.$Message.info(res.data.message)
               }
             })
           } else if (this.tomethod === 'update') {
             updateEssay(this.editValue).then(res => {
               if (res.data.resultCode === 200) {
+                this.data1 = []
+                getEssays(10, 1, 'activity').then(res => {
+                  let data = res.data.page
+                  if (res.data.resultCode === '200') {
+                    data.list.forEach(element => {
+                      this.data1.push(element)
+                    })
+                    this.total = data.total
+                    this.currentPage = data.pageNum
+                  }
+                })
                 this.$Message.info(res.data.message)
               }
             })

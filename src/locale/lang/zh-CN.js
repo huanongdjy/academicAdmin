@@ -6,6 +6,7 @@ export default {
   subjectmanage_page: '学科管理',
   statistics_page: '统计分析',
   record_page: '日志',
+  personal_page: '个人中心',
 
   components: '组件',
   count_to_page: '数字渐变',

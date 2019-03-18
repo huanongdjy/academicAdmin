@@ -13,6 +13,15 @@ export function getUsers (pageSize, currentPage) {
   })
 }
 
+export function getUserByUsername (username) {
+  return axios({
+    url: '/getUserByUsername',
+    data: inputJson,
+    method: 'post',
+    withCredentials: true
+  })
+}
+
 export function updateUser (inputJson) {
   console.log(inputJson)
   return axios({

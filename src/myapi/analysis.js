@@ -13,13 +13,26 @@ export function getInforCardData (begTime, endTime) {
   })
 }
 
-export function getPieData (begTime, endTime) {
+export function getEssayPieData (begTime, endTime) {
   var inputJson = {
     begTime,
     endTime
   }
   return axios({
-    url: '/getPieData',
+    url: '/getEssayPieData',
+    method: 'post',
+    data: inputJson,
+    withCredentials: true
+  })
+}
+
+export function getAchievementPieData (begTime, endTime) {
+  var inputJson = {
+    begTime,
+    endTime
+  }
+  return axios({
+    url: '/getAchievementPieData',
     method: 'post',
     data: inputJson,
     withCredentials: true

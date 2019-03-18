@@ -88,7 +88,7 @@ export default [
     ]
   },
   {
-    path: '',
+    path: '/activitymanage',
     name: 'activitymanage',
     meta: {
       hideInBread: true
@@ -108,7 +108,7 @@ export default [
     ]
   },
   {
-    path: '',
+    path: '/subjectmanage',
     name: 'subjectmanage',
     meta: {
       hideInBread: true
@@ -128,7 +128,7 @@ export default [
     ]
   },
   {
-    path: '',
+    path: '/record',
     name: 'record',
     meta: {
       hideInBread: true
@@ -148,41 +148,23 @@ export default [
     ]
   },
   {
-    path: '',
-    name: 'record',
+    path: '/personalManager',
+    name: 'personalManager',
     meta: {
-      hideInBread: true
+      hideInBread: true,
+      hideInMenu: true
     },
     component: Main,
     children: [
       {
-        path: 'editor_page',
-        name: 'editor_page',
+        path: 'personal_page',
+        name: 'personal_page',
         meta: {
-          icon: 'ios-create',
-          title: '富文本编辑器'
-        },
-        component: () => import('@/view/directive/editor.vue')
-      }
-    ]
-  },
-  {
-    path: '',
-    name: 'statistics',
-    meta: {
-      hideInBread: true
-    },
-    component: Main,
-    children: [
-      {
-        path: 'statistics_page',
-        name: 'statistics_page',
-        meta: {
-          title: '统计分析',
+          title: '个人中心',
           href: '',
           icon: 'ios-book'
         },
-        component: () => import('@/view/directive/myUserMananger.vue')
+        component: () => import('@/view/directive/personalManager.vue')
       }
     ]
   }

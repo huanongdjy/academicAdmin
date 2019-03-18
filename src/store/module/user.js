@@ -12,12 +12,7 @@ export default {
     avatorImgPath: '',
     token: getToken(),
     access: '',
-    hasGetInfo: false,
-    unreadCount: 0,
-    messageUnreadList: [],
-    messageReadedList: [],
-    messageTrashList: [],
-    messageContentStore: {}
+    hasGetInfo: false
   },
   mutations: {
     setAvator (state, avatorPath) {
@@ -38,33 +33,10 @@ export default {
     },
     setHasGetInfo (state, status) {
       state.hasGetInfo = status
-    },
-    setMessageCount (state, count) {
-      state.unreadCount = count
-    },
-    setMessageUnreadList (state, list) {
-      state.messageUnreadList = list
-    },
-    setMessageReadedList (state, list) {
-      state.messageReadedList = list
-    },
-    setMessageTrashList (state, list) {
-      state.messageTrashList = list
-    },
-    updateMessageContentStore (state, { msg_id, content }) {
-      state.messageContentStore[msg_id] = content
-    },
-    moveMsg (state, { from, to, msg_id }) {
-      const index = state[from].findIndex(_ => _.msg_id === msg_id)
-      const msgItem = state[from].splice(index, 1)[0]
-      msgItem.loading = false
-      state[to].unshift(msgItem)
     }
   },
   getters: {
-    messageUnreadCount: state => state.messageUnreadList.length,
-    messageReadedCount: state => state.messageReadedList.length,
-    messageTrashCount: state => state.messageTrashList.length
+    getUsername: state => state.username
   },
   actions: {
     // 登录
@@ -80,7 +52,7 @@ export default {
           if (data.resultCode === 200) {
             commit('setToken', res.data.token)
             const data = res.data.user
-            // commit('setAvator', data.avator)
+            commit('setAvator', data.avator)
             commit('setUserName', data.username)
             commit('setUserId', data.userId)
             commit('setAccess', [data.identity.access])

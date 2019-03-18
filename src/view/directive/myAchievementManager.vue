@@ -224,7 +224,7 @@ import { quillEditor, Quill } from 'vue-quill-editor'
 import { container, ImageExtend, QuillWatch } from 'quill-image-extend-module'
 import expandRow from './table-expand.vue'
 import { getToken } from '@/libs/util'
-import { getAchievement, updateAchievement, deletePhotos, addAchievement, deleteAchievement, searchaChievement } from '@/myapi/achievementManager'
+import { getAchievement, updateAchievement, deletePhotos, addAchievement, deleteAchievement, searchaChievement, changeAchievementToshow } from '@/myapi/achievementManager'
 import { getAllType } from '@/myapi/typeManager'
 Quill.register('modules/ImageExtend', ImageExtend)
 export default {
@@ -328,7 +328,6 @@ export default {
           type: 'expand',
           width: 50,
           render: (h, params) => {
-            console.log(params.row)
             return h(expandRow, {
               props: {
                 row: params.row
@@ -370,8 +369,8 @@ export default {
                     params.row.toshow = false
                   }
                 },
-                'on-change': function () {
-                  // _this.functionFun() // 方法自定义
+                'on-change': () => {
+                  this._changeToshow(params.row.id, params.row.toshow)
                 }
               }
             })
@@ -473,6 +472,11 @@ export default {
     }
   },
   methods: {
+    _changeToshow (id, toshow) {
+      changeAchievementToshow(id, toshow).then(res => {
+        this.$Message.warning(res.data.message)
+      })
+    },
     changePage (index) {
       getAchievement(10, index, 'achievements').then(res => {
         let data = res.data.page
@@ -517,7 +521,6 @@ export default {
     },
     remove (index) {
       deleteAchievement(this.data1[index].id).then(res => {
-        console.log(res.data.resultCode === 200)
         if (res.data.resultCode === 200) {
           this.$Message.info(res.data.message)
           // this.tableData1.splice(index, 1)
@@ -655,7 +658,6 @@ export default {
           this.typeList.push(element)
         })
       }
-      console.log(this.typeList)
     })
   }
 }
