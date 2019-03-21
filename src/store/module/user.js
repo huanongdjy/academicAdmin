@@ -14,7 +14,8 @@ export default {
     avatorImgPath: '',
     token: getToken(),
     access: '',
-    hasGetInfo: false
+    hasGetInfo: false,
+    meta: []
   },
   mutations: {
     setAvator (state, avatorPath) {
@@ -35,6 +36,9 @@ export default {
     },
     setHasGetInfo (state, status) {
       state.hasGetInfo = status
+    },
+    setMeta (state, memus) {
+      state.meta = memus
     }
   },
   getters: {
@@ -44,8 +48,10 @@ export default {
     // 登录
     handleLogin ({ commit }, { username, password, identity }) {
       getAccess().then(res => {
+        // routers[2].meta.access.push(res.data.memus[0].access)
+        commit('setMeta', res.data.memus)
+        console.log(res.data.memus)
         console.log(routers)
-        routers[2].meta.access.push(res.data.memus[0].access)
       })
       username = username.trim()
       return new Promise((resolve, reject) => {
@@ -63,8 +69,10 @@ export default {
             commit('setUserId', data.userId)
             commit('setAccess', [data.identity.access])
             commit('setHasGetInfo', true)
-            resolve(res)
-            resolve()
+            setTimeout(() => {
+              resolve(res)
+              resolve()
+            }, 1000)
           } else {
             resolve(res)
             resolve()
@@ -77,7 +85,7 @@ export default {
     // 退出登录
     handleLogOut ({ state, commit }) {
       return new Promise((resolve, reject) => {
-        logout(state.token).then(() => {
+        logout().then(() => {
           commit('setToken', '')
           commit('setAccess', [])
           resolve()

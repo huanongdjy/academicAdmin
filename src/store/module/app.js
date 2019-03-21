@@ -10,7 +10,6 @@ import {
   getRouteTitleHandled,
   localSave,
   localRead
-  // getAccess
 } from '@/libs/util'
 import router from '@/router'
 import routers from '@/router/routers'
@@ -32,8 +31,7 @@ export default {
     homeRoute: {},
     local: localRead('local'),
     errorList: [],
-    hasReadErrorPage: false,
-    meta: []
+    hasReadErrorPage: false
   },
   getters: {
     menuList: (state, getters, rootState) => getMenuByRouter(routers, rootState.user.access),

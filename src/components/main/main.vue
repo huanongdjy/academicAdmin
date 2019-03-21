@@ -105,7 +105,8 @@ export default {
       'addTag',
       'setLocal',
       'setHomeRoute',
-      'closeTag'
+      'closeTag',
+      'setMeta'
     ]),
     ...mapActions([
       'handleLogin'
@@ -189,7 +190,8 @@ export default {
   },
   created () {
     getAccess().then(res => {
-      routers[2].meta.access.push(res.data.memus[0].access)
+      // routers[2].meta.access.push(res.data.memus[0].access)
+      this.setMeta(res.data.menu)
     })
   }
 }

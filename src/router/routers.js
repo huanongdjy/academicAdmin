@@ -54,8 +54,8 @@ export default [
     path: '/usermanage',
     name: 'usermanage',
     meta: {
-      hideInBread: true,
-      access: []
+      hideInBread: true
+      // access: [store.state.user.meta[0].access]
     },
     component: Main,
     children: [

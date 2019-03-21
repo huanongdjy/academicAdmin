@@ -4,12 +4,24 @@
     <Input search placeholder="请输入活动名称" class="search" v-model="searchValue" @on-search="mysearch">
       <Icon type="ios-search" slot="suffix" />
     </Input>
-    <Table :columns="columns" :data="data1"></Table>
-    <div style="margin: 10px;overflow: hidden">
-      <div style="float: right;">
-        <Page :total="total" :current="currentPage" @on-change="changePage"></Page>
-      </div>
-    </div>
+    <Tabs :value="currname" @on-click="changeTab">
+      <TabPane label="未举办活动" name="name1">
+        <Table :columns="columns" :data="data1"></Table>
+        <div style="margin: 10px;overflow: hidden">
+          <div style="float: right;">
+            <Page :total="total" :current="currentPage" @on-change="changePage"></Page>
+          </div>
+        </div>
+      </TabPane>
+      <TabPane label="已举办活动" name="name2">
+        <Table :columns="columns" :data="data1"></Table>
+        <div style="margin: 10px;overflow: hidden">
+          <div style="float: right;">
+            <Page :total="total" :current="currentPage" @on-change="changePage"></Page>
+          </div>
+        </div>
+      </TabPane>
+    </Tabs>
     <Modal title="新增活动" v-model="visibleAdd" width="1000px">
       <Form ref="editValue" :label-width="100" :model="editValue" :rules="ruleValid">
         <FormItem label="标题" prop="title">
@@ -222,6 +234,7 @@ export default {
       updatemethod: 'update',
       addmethod: 'add',
       searchValue: '',
+      currname: 'name1',
       currentPage: 1,
       total: 0,
       visibleUpdate: false,
@@ -276,7 +289,7 @@ export default {
         {
           title: '是否对外展示',
           key: 'action',
-          width: 150,
+          width: 100,
           align: 'center',
           render: (h, params) => {
             return h('i-switch', {
@@ -302,7 +315,7 @@ export default {
         {
           title: '操作',
           key: 'action',
-          width: 150,
+          width: 200,
           align: 'center',
           render: (h, params) => {
             return h('div', [
@@ -320,6 +333,20 @@ export default {
                   }
                 }
               }, '编辑'),
+              h('Button', {
+                props: {
+                  type: 'primary',
+                  size: 'small'
+                },
+                style: {
+                  marginRight: '5px'
+                },
+                on: {
+                  click: () => {
+                    this.outcome(params.index)
+                  }
+                }
+              }, '活动总结'),
               h('Button', {
                 props: {
                   type: 'error',
@@ -424,7 +451,9 @@ export default {
       })
     },
     changePage (index) {
-      getEssays(10, index, 'activity').then(res => {
+      let act = 'newactivity'
+      if (this.currname === 'name2') act = 'oldactivity'
+      getEssays(10, index, act).then(res => {
         let data = res.data.page
         this.data1 = []
         if (res.data.resultCode === '200') {
@@ -437,7 +466,9 @@ export default {
       })
     },
     updatePage () {
-      getEssays(10, this.currentPage, 'activity').then(res => {
+      let act = 'newactivity'
+      if (this.currname === 'name2') act = 'oldactivity'
+      getEssays(10, this.currentPage, act).then(res => {
         let data = res.data.page
         this.data1 = []
         if (res.data.resultCode === '200') {
@@ -460,6 +491,33 @@ export default {
           this.$Message.info('该活动名不存在')
         }
       })
+    },
+    changeTab (name) {
+      console.log(name)
+      this.data1 = []
+      if (name === 'name1') {
+        getEssays(10, 1, 'newactivity').then(res => {
+          let data = res.data.page
+          if (res.data.resultCode === '200') {
+            data.list.forEach(element => {
+              this.data1.push(element)
+            })
+            this.total = data.total
+            this.currentPage = data.pageNum
+          }
+        })
+      } else if (name === 'name2') {
+        getEssays(10, 1, 'oldactivity').then(res => {
+          let data = res.data.page
+          if (res.data.resultCode === '200') {
+            data.list.forEach(element => {
+              this.data1.push(element)
+            })
+            this.total = data.total
+            this.currentPage = data.pageNum
+          }
+        })
+      }
     },
     show (index) {
       this.visibleUpdate = true
@@ -517,6 +575,8 @@ export default {
     ok () {
       this.$refs['editValue'].validate(vaild => {
         if (vaild) {
+          let act = 'newactivity'
+          if (this.currname === 'name2') act = 'oldactivity'
           if (!(this.uploadList.length === 0)) {
             this.uploadList.forEach(item => {
               this.editValue.photoList.push(item)
@@ -526,7 +586,7 @@ export default {
             addEssay(this.editValue).then(res => {
               if (res.data.resultCode === 200) {
                 this.data1 = []
-                getEssays(10, 1, 'activity').then(res => {
+                getEssays(10, 1, act).then(res => {
                   let data = res.data.page
                   if (res.data.resultCode === '200') {
                     data.list.forEach(element => {
@@ -543,7 +603,7 @@ export default {
             updateEssay(this.editValue).then(res => {
               if (res.data.resultCode === 200) {
                 this.data1 = []
-                getEssays(10, 1, 'activity').then(res => {
+                getEssays(10, 1, act).then(res => {
                   let data = res.data.page
                   if (res.data.resultCode === '200') {
                     data.list.forEach(element => {
@@ -571,7 +631,7 @@ export default {
     }
   },
   created () {
-    getEssays(10, 1, 'activity').then(res => {
+    getEssays(10, 1, 'newactivity').then(res => {
       let data = res.data.page
       if (res.data.resultCode === '200') {
         data.list.forEach(element => {
