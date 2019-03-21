@@ -21,6 +21,14 @@
           </div>
         </div>
       </TabPane>
+      <TabPane label="全部活动" name="name3">
+        <Table :columns="columns" :data="data1"></Table>
+        <div style="margin: 10px;overflow: hidden">
+          <div style="float: right;">
+            <Page :total="total" :current="currentPage" @on-change="changePage"></Page>
+          </div>
+        </div>
+      </TabPane>
     </Tabs>
     <Modal title="新增活动" v-model="visibleAdd" width="1000px">
       <Form ref="editValue" :label-width="100" :model="editValue" :rules="ruleValid">
@@ -481,6 +489,7 @@ export default {
       })
     },
     mysearch () {
+      this.name = 'name3'
       searchEssays(this.searchValue).then(res => {
         if (res.data.resultCode === 200 && !(res.data.essays.length === 0)) {
           this.data1 = []
@@ -493,12 +502,13 @@ export default {
       })
     },
     changeTab (name) {
-      console.log(name)
+      this.currentPage = 1
       this.data1 = []
       if (name === 'name1') {
         getEssays(10, 1, 'newactivity').then(res => {
           let data = res.data.page
           if (res.data.resultCode === '200') {
+            this.data1 = []
             data.list.forEach(element => {
               this.data1.push(element)
             })
@@ -510,6 +520,7 @@ export default {
         getEssays(10, 1, 'oldactivity').then(res => {
           let data = res.data.page
           if (res.data.resultCode === '200') {
+            this.data1 = []
             data.list.forEach(element => {
               this.data1.push(element)
             })
