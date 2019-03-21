@@ -10,6 +10,7 @@ import {
   getRouteTitleHandled,
   localSave,
   localRead
+  // getAccess
 } from '@/libs/util'
 import router from '@/router'
 import routers from '@/router/routers'
@@ -31,7 +32,8 @@ export default {
     homeRoute: {},
     local: localRead('local'),
     errorList: [],
-    hasReadErrorPage: false
+    hasReadErrorPage: false,
+    meta: []
   },
   getters: {
     menuList: (state, getters, rootState) => getMenuByRouter(routers, rootState.user.access),
@@ -44,6 +46,9 @@ export default {
     setHomeRoute (state, routes) {
       state.homeRoute = getHomeRoute(routes, homeName)
     },
+    // setMemuAccess (state, routes) {
+    //   state.
+    // },
     setTagNavList (state, list) {
       let tagList = []
       if (list) {

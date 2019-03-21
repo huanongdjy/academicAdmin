@@ -4,6 +4,8 @@ import {
   getUserInfo
 } from '@/api/user'
 import { setToken, getToken } from '@/libs/util'
+import { getAccess } from '@/myapi/main'
+import routers from '@/router/routers'
 
 export default {
   state: {
@@ -41,6 +43,10 @@ export default {
   actions: {
     // 登录
     handleLogin ({ commit }, { username, password, identity }) {
+      getAccess().then(res => {
+        console.log(routers)
+        routers[2].meta.access.push(res.data.memus[0].access)
+      })
       username = username.trim()
       return new Promise((resolve, reject) => {
         login({

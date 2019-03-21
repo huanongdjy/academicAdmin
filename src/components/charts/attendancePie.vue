@@ -131,9 +131,5 @@ export default {
   beforeDestroy () {
     off(window, 'resize', this.resize)
   }
-  // created () {
-  //   console.log('created')
-  //   console.log(this.value)
-  // }
 }
 </script>

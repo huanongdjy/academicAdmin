@@ -160,7 +160,6 @@ export default {
               this.changePage(this.currentPage)
             })
           } else if (this.tomethod === 'add') {
-            console.log(this.formCustom.type_id)
             addType(this.formCustom).then(res => {
               this.$Message.info(res.data.message)
               this.changePage(this.currentPage)

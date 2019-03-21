@@ -23,7 +23,6 @@ export function getUserByUsername (username) {
 }
 
 export function updateUser (inputJson) {
-  console.log(inputJson)
   return axios({
     url: '/updateUser',
     data: inputJson,

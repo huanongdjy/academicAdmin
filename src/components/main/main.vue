@@ -46,6 +46,7 @@ import Fullscreen from './components/fullscreen'
 import { mapMutations, mapActions, mapGetters } from 'vuex'
 import { getNewTagList, routeEqual } from '@/libs/util'
 import routers from '@/router/routers'
+import { getAccess } from '@/myapi/main'
 import minLogo from '@/assets/images/logo-min.jpg'
 import maxLogo from '@/assets/images/logo.jpg'
 import './main.less'
@@ -85,7 +86,7 @@ export default {
       return list
     },
     menuList () {
-      return this.$store.getters.menuList
+      return this.$store.getters.menuList// 路由列表显示
     },
     local () {
       return this.$store.state.app.local
@@ -145,6 +146,22 @@ export default {
     },
     handleClick (item) {
       this.turnToPage(item)
+    },
+    init () {
+      this.setTagNavList()
+      this.setHomeRoute(routers)
+      this.addTag({
+        route: this.$store.state.app.homeRoute
+      })
+      this.setBreadCrumb(this.$route)
+      // 设置初始语言
+      this.setLocal(this.$i18n.locale)
+      // 如果当前打开页面不在标签栏中，跳到homeName页
+      if (!this.tagNavList.find(item => item.name === this.$route.name)) {
+        this.$router.push({
+          name: this.$config.homeName
+        })
+      }
     }
   },
   watch: {
@@ -157,28 +174,23 @@ export default {
       this.setBreadCrumb(newRoute)
       this.setTagNavList(getNewTagList(this.tagNavList, newRoute))
       this.$refs.sideMenu.updateOpenName(newRoute.name)
+    },
+    routers (newRoute) {
+      this.init()
     }
   },
   mounted () {
     /**
      * @description 初始化设置面包屑导航和标签导航
      */
-    this.setTagNavList()
-    this.setHomeRoute(routers)
-    this.addTag({
-      route: this.$store.state.app.homeRoute
-    })
-    this.setBreadCrumb(this.$route)
-    // 设置初始语言
-    this.setLocal(this.$i18n.locale)
-    // 如果当前打开页面不在标签栏中，跳到homeName页
-    if (!this.tagNavList.find(item => item.name === this.$route.name)) {
-      this.$router.push({
-        name: this.$config.homeName
-      })
-    }
+    this.init()
     // 获取未读消息条数
     // this.getUnreadMessageCount()
+  },
+  created () {
+    getAccess().then(res => {
+      routers[2].meta.access.push(res.data.memus[0].access)
+    })
   }
 }
 </script>

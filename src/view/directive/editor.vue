@@ -190,7 +190,6 @@ export default {
   methods: {
     handleSubmit () {
       this.$refs['editValue'].validate(vaild => {
-        console.log(this.editValue.content)
         if (vaild) {
           if (!(this.uploadList.length === 0)) {
             this.uploadList.forEach(item => {

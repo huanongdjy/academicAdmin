@@ -2,6 +2,7 @@ import Cookies from 'js-cookie'
 // cookie保存的天数
 import config from '@/config'
 import { forEach, hasOneOf, objEqual } from '@/libs/tools'
+// import axios from '@/libs/myaxios'
 const { title, cookieExpires, useI18n } = config
 
 export const TOKEN_KEY = 'token'
@@ -397,3 +398,12 @@ export const setTitle = (routeItem, vm) => {
   const resTitle = pageTitle ? `${title} - ${pageTitle}` : title
   window.document.title = resTitle
 }
+
+// export const getAccess = () => {
+//   return axios({
+//     url: '/getAccess',
+//     method: 'post',
+//     data: inputJson,
+//     withCredentials: true
+//   })
+// }

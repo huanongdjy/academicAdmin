@@ -1,4 +1,5 @@
 import Main from '@/components/main'
+// import store from '@/store'
 
 /**
  * iview-admin中meta除了原生参数外可配置的参数:
@@ -53,7 +54,8 @@ export default [
     path: '/usermanage',
     name: 'usermanage',
     meta: {
-      hideInBread: true
+      hideInBread: true,
+      access: []
     },
     component: Main,
     children: [

@@ -41,7 +41,6 @@ export default {
             name: this.$config.homeName
           })
         } else {
-          console.log(data)
           this.visible = true
           this.message = data.message
         }

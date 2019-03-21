@@ -462,7 +462,6 @@ export default {
       })
     },
     show (index) {
-      console.log(this.data1[index].location)
       this.visibleUpdate = true
       this.tomethod = 'update'
       this.editValue.id = this.data1[index].id
@@ -517,7 +516,6 @@ export default {
     },
     ok () {
       this.$refs['editValue'].validate(vaild => {
-        console.log(this.editValue.type_id)
         if (vaild) {
           if (!(this.uploadList.length === 0)) {
             this.uploadList.forEach(item => {
