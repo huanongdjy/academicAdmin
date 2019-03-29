@@ -1,5 +1,6 @@
 import axios from 'axios'
 import { getToken } from '@/libs/util'
+import httpurl from '@/config/httpURL'
 // import Qs from 'qs'
 
 // import cookie from '../../static/js/cookie.js'
@@ -10,7 +11,7 @@ axios.defaults.timeout = 10000 //  超时时间
 axios.defaults.headers.post['Content-Type'] = 'application/json;charset=UTF-8'
 axios.defaults.headers['Authorization'] = getToken()
 // axios.defaults.headers.post['Content-Type'] = 'text/plain'
-axios.defaults.baseURL = 'http://localhost:8083' //   默认地址
+axios.defaults.baseURL = httpurl //   默认地址
 
 // 路由响应拦截
 // http response 拦截器

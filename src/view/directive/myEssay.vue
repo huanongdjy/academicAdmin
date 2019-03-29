@@ -4,32 +4,12 @@
     <Input search placeholder="请输入活动名称" class="search" v-model="searchValue" @on-search="mysearch">
       <Icon type="ios-search" slot="suffix" />
     </Input>
-    <Tabs :value="currname" @on-click="changeTab">
-      <TabPane label="未举办活动" name="name1">
-        <Table :columns="columns" :data="data1"></Table>
-        <div style="margin: 10px;overflow: hidden">
-          <div style="float: right;">
-            <Page :total="total" :current="currentPage" @on-change="changePage"></Page>
-          </div>
-        </div>
-      </TabPane>
-      <TabPane label="已举办活动" name="name2">
-        <Table :columns="columns" :data="data1"></Table>
-        <div style="margin: 10px;overflow: hidden">
-          <div style="float: right;">
-            <Page :total="total" :current="currentPage" @on-change="changePage"></Page>
-          </div>
-        </div>
-      </TabPane>
-      <TabPane label="全部活动" name="name3">
-        <Table :columns="columns" :data="data1"></Table>
-        <div style="margin: 10px;overflow: hidden">
-          <div style="float: right;">
-            <Page :total="total" :current="currentPage" @on-change="changePage"></Page>
-          </div>
-        </div>
-      </TabPane>
-    </Tabs>
+    <Table :columns="columns" :data="data1"></Table>
+    <div style="margin: 10px;overflow: hidden">
+      <div style="float: right;">
+        <Page :total="total" :current="currentPage" @on-change="changePage"></Page>
+      </div>
+    </div>
     <Modal title="新增活动" v-model="visibleAdd" width="1000px">
       <Form ref="editValue" :label-width="100" :model="editValue" :rules="ruleValid">
         <FormItem label="标题" prop="title">
@@ -143,7 +123,7 @@
       </div>
     </Modal>
     <Modal title="View Image" v-model="visible">
-      <img :src="'http://localhost:8083/uploaded/' + viewUrl " v-if="visible" style="width: 100%">
+      <img :src="httpurl + 'uploaded/' + viewUrl " v-if="visible" style="width: 100%">
     </Modal>
   </div>
 </template>
@@ -154,6 +134,7 @@ import { getAllType } from '@/myapi/typeManager'
 import 'quill/dist/quill.core.css'
 import 'quill/dist/quill.snow.css'
 import 'quill/dist/quill.bubble.css'
+import httpurl from '@/config/httpURL'
 import { quillEditor, Quill } from 'vue-quill-editor'
 import { container, ImageExtend, QuillWatch } from 'quill-image-extend-module'
 import { getToken } from '@/libs/util'
@@ -180,6 +161,7 @@ export default {
     }
     const validateContent = (rule, value, callback) => {
       if (value === '') {
+        console.log('yanz')
         callback(new Error('请输入内容'))
       } else {
         callback()
@@ -239,12 +221,14 @@ export default {
       }
     }
     return {
+      httpurl: httpurl,
       updatemethod: 'update',
       addmethod: 'add',
       searchValue: '',
       currname: 'name1',
       currentPage: 1,
       total: 0,
+      visibleSummarize: false,
       visibleUpdate: false,
       visibleAdd: false,
       visible: false,
@@ -343,20 +327,6 @@ export default {
               }, '编辑'),
               h('Button', {
                 props: {
-                  type: 'primary',
-                  size: 'small'
-                },
-                style: {
-                  marginRight: '5px'
-                },
-                on: {
-                  click: () => {
-                    this.outcome(params.index)
-                  }
-                }
-              }, '活动总结'),
-              h('Button', {
-                props: {
                   type: 'error',
                   size: 'small'
                 },
@@ -391,6 +361,12 @@ export default {
         // slider: [20, 50],
         // textarea: ''
       },
+      outcomeForm: {
+        id: '',
+        title: '',
+        content: '',
+        photoList: []
+      },
       token: getToken(),
       ruleValid: {
         title: [
@@ -424,16 +400,21 @@ export default {
           { validator: validatePlanned_attendance, trigger: 'blur' }
         ]
       },
+      outVaild: {
+        content: [
+          { validator: validateContent, trigger: 'blur' }
+        ]
+      },
       editorOption: {
         modules: {
           ImageExtend: {
             loading: true,
             name: 'file',
             size: 2,
-            action: 'http://localhost:8083/uploadPhoto',
+            action: this.httpurl + 'uploadPhoto',
             response: (res) => {
               this.uploadList.push({ 'url': res.url })
-              return 'http://localhost:8083/uploaded/' + res.url
+              return this.httpurl + 'uploaded/' + res.url
             },
             headers: (xhr) => {
               xhr.withCredentials = true
@@ -459,9 +440,7 @@ export default {
       })
     },
     changePage (index) {
-      let act = 'newactivity'
-      if (this.currname === 'name2') act = 'oldactivity'
-      getEssays(10, index, act).then(res => {
+      getEssays(10, index, 'newactivity').then(res => {
         let data = res.data.page
         this.data1 = []
         if (res.data.resultCode === '200') {
@@ -474,9 +453,7 @@ export default {
       })
     },
     updatePage () {
-      let act = 'newactivity'
-      if (this.currname === 'name2') act = 'oldactivity'
-      getEssays(10, this.currentPage, act).then(res => {
+      getEssays(10, this.currentPage, 'newactivity').then(res => {
         let data = res.data.page
         this.data1 = []
         if (res.data.resultCode === '200') {
@@ -501,35 +478,47 @@ export default {
         }
       })
     },
-    changeTab (name) {
-      this.currentPage = 1
-      this.data1 = []
-      if (name === 'name1') {
-        getEssays(10, 1, 'newactivity').then(res => {
-          let data = res.data.page
-          if (res.data.resultCode === '200') {
-            this.data1 = []
-            data.list.forEach(element => {
-              this.data1.push(element)
-            })
-            this.total = data.total
-            this.currentPage = data.pageNum
-          }
-        })
-      } else if (name === 'name2') {
-        getEssays(10, 1, 'oldactivity').then(res => {
-          let data = res.data.page
-          if (res.data.resultCode === '200') {
-            this.data1 = []
-            data.list.forEach(element => {
-              this.data1.push(element)
-            })
-            this.total = data.total
-            this.currentPage = data.pageNum
-          }
-        })
-      }
-    },
+    // changeTab (name) {
+    //   this.currentPage = 1
+    //   this.data1 = []
+    //   if (name === 'name1') {
+    //     getEssays(10, 1, 'newactivity').then(res => {
+    //       let data = res.data.page
+    //       if (res.data.resultCode === '200') {
+    //         this.data1 = []
+    //         data.list.forEach(element => {
+    //           this.data1.push(element)
+    //         })
+    //         this.total = data.total
+    //         this.currentPage = data.pageNum
+    //       }
+    //     })
+    //   } else if (name === 'name2') {
+    //     getEssays(10, 1, 'oldactivity').then(res => {
+    //       let data = res.data.page
+    //       if (res.data.resultCode === '200') {
+    //         this.data1 = []
+    //         data.list.forEach(element => {
+    //           this.data1.push(element)
+    //         })
+    //         this.total = data.total
+    //         this.currentPage = data.pageNum
+    //       }
+    //     })
+    //   } else if (name === 'name3') {
+    //     getEssays(10, 1, 'activity').then(res => {
+    //       let data = res.data.page
+    //       if (res.data.resultCode === '200') {
+    //         this.data1 = []
+    //         data.list.forEach(element => {
+    //           this.data1.push(element)
+    //         })
+    //         this.total = data.total
+    //         this.currentPage = data.pageNum
+    //       }
+    //     })
+    //   }
+    // },
     show (index) {
       this.visibleUpdate = true
       this.tomethod = 'update'
@@ -550,6 +539,12 @@ export default {
           this.editValue.photoList.push(item)
         })
       }
+    },
+    outcome (index) {
+      this.visibleSummarize = true
+      this.outcomeForm.id = this.data1[index].id
+      this.outcomeForm.title = this.data1[index].title
+      this.outcomeForm.content = ''
     },
     remove (index) {
       deleteEssay(this.data1[index].id).then(res => {
@@ -582,12 +577,12 @@ export default {
     cancel () {
       this.visibleAdd = false
       this.visibleUpdate = false
+      this.visibleSummarize = false
+      this.uploadList = []
     },
     ok () {
       this.$refs['editValue'].validate(vaild => {
         if (vaild) {
-          let act = 'newactivity'
-          if (this.currname === 'name2') act = 'oldactivity'
           if (!(this.uploadList.length === 0)) {
             this.uploadList.forEach(item => {
               this.editValue.photoList.push(item)
@@ -597,7 +592,7 @@ export default {
             addEssay(this.editValue).then(res => {
               if (res.data.resultCode === 200) {
                 this.data1 = []
-                getEssays(10, 1, act).then(res => {
+                getEssays(10, 1, 'newactivity').then(res => {
                   let data = res.data.page
                   if (res.data.resultCode === '200') {
                     data.list.forEach(element => {
@@ -614,7 +609,7 @@ export default {
             updateEssay(this.editValue).then(res => {
               if (res.data.resultCode === 200) {
                 this.data1 = []
-                getEssays(10, 1, act).then(res => {
+                getEssays(10, 1, 'newactivity').then(res => {
                   let data = res.data.page
                   if (res.data.resultCode === '200') {
                     data.list.forEach(element => {

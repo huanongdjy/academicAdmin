@@ -60,7 +60,7 @@
         </FormItem>
         <FormItem label="已上传图片" v-if="uploadList.length > 0">
           <div class="demo-upload-list" v-for="i in uploadList" :key="i.url">
-            <img :src="'http://localhost:8083/uploaded/'+ i.url">
+            <img :src="httpurl + 'uploaded/'+ i.url">
             <div class="demo-upload-list-cover">
               <Icon type="ios-eye-outline" @click.native="handleView(i.url)"></Icon>
               <Icon type="ios-trash-outline" @click.native="handleRemove(i)"></Icon>
@@ -75,14 +75,14 @@
         </FormItem>
         <!-- <FormItem label="图片">
           <div class="demo-upload-list" v-for="item in formItem.photoList" :key="item.url">
-            <img :src="'http://localhost:8083/uploaded/'+ item.url">
+            <img :src="'http://182.254.187.57:8083/uploaded/'+ item.url">
             <div class="demo-upload-list-cover">
               <Icon type="ios-eye-outline" @click.native="handleView(item.url)"></Icon>
               <Icon type="ios-trash-outline" @click.native="handleRemove(item)"></Icon>
             </div>
           </div>
           <div class="demo-upload-list" v-for="i in uploadList" :key="i.url">
-            <img :src="'http://localhost:8083/uploaded/'+ i.url">
+            <img :src="'http://182.254.187.57:8083/uploaded/'+ i.url">
             <div class="demo-upload-list-cover">
               <Icon type="ios-eye-outline" @click.native="handleView(i.url)"></Icon>
               <Icon type="ios-trash-outline" @click.native="handleRemove(i)"></Icon>
@@ -99,7 +99,7 @@
             :before-upload="handleBeforeUpload"
             multiple
             type="drag"
-            action="http://localhost:8083/uploadPhoto"
+            action="http://182.254.187.57:8083/uploadPhoto"
             style="display: inline-block;width:58px;">
             <div style="width: 58px;height:58px;line-height: 58px;">
                 <Icon type="ios-camera" size="20"></Icon>
@@ -165,7 +165,7 @@
         </FormItem> -->
         <FormItem label="已上传图片" v-if="uploadList.length > 0">
           <div class="demo-upload-list" v-for="i in uploadList" :key="i.url">
-            <img :src="'http://localhost:8083/uploaded/'+ i.url">
+            <img :src="httpurl + 'uploaded/'+ i.url">
             <div class="demo-upload-list-cover">
               <Icon type="ios-eye-outline" @click.native="handleView(i.url)"></Icon>
               <Icon type="ios-trash-outline" @click.native="handleRemove(i)"></Icon>
@@ -180,7 +180,7 @@
         </FormItem>
         <!-- <FormItem label="上传图片">
           <div class="demo-upload-list" v-for="i in uploadList" :key="i.url">
-            <img :src="'http://localhost:8083/uploaded/'+ i.url">
+            <img :src="'http://182.254.187.57:8083/uploaded/'+ i.url">
             <div class="demo-upload-list-cover">
               <Icon type="ios-eye-outline" @click.native="handleView(i.url)"></Icon>
               <Icon type="ios-trash-outline" @click.native="handleRemove(i)"></Icon>
@@ -198,7 +198,7 @@
             multiple
             :headers = "header"
             type="drag"
-            action="http://localhost:8083/uploadPhoto"
+            action="http://182.254.187.57:8083/uploadPhoto"
             style="display: inline-block;width:58px;">
             <div style="width: 58px;height:58px;line-height: 58px;">
                 <Icon type="ios-camera" size="20"></Icon>
@@ -212,7 +212,7 @@
       </div>
     </Modal>
     <Modal title="View Image" v-model="visible">
-      <img :src="'http://localhost:8083/uploaded/' + viewUrl " v-if="visible" style="width: 100%">
+      <img :src="httpurl + 'uploaded/' + viewUrl " v-if="visible" style="width: 100%">
     </Modal>
   </div>
 </template>
@@ -223,6 +223,7 @@ import 'quill/dist/quill.bubble.css'
 import { quillEditor, Quill } from 'vue-quill-editor'
 import { container, ImageExtend, QuillWatch } from 'quill-image-extend-module'
 import expandRow from './table-expand.vue'
+import httpurl from '@/config/httpURL'
 import { getToken } from '@/libs/util'
 import { getAchievement, updateAchievement, deletePhotos, addAchievement, deleteAchievement, searchaChievement, changeAchievementToshow } from '@/myapi/achievementManager'
 import { getAllType } from '@/myapi/typeManager'
@@ -283,6 +284,7 @@ export default {
       }
     }
     return {
+      httpurl: httpurl,
       typeList: [],
       searchValue: '',
       currentPage: 1,
@@ -449,10 +451,10 @@ export default {
             loading: true,
             name: 'file',
             size: 2,
-            action: 'http://localhost:8083/uploadPhoto',
+            action: httpurl + 'uploadPhoto',
             response: (res) => {
               this.uploadList.push({ 'url': res.url })
-              return 'http://localhost:8083/uploaded/' + res.url
+              return httpurl + 'uploaded/' + res.url
             },
             headers: (xhr) => {
               xhr.withCredentials = true

@@ -4,6 +4,7 @@ import 'quill/dist/quill.core.css'
 import 'quill/dist/quill.snow.css'
 import 'quill/dist/quill.bubble.css'
 // import { Script } from "vm"
+import httpurl from '@/config/httpURL'
 import { quillEditor, Quill } from 'vue-quill-editor'
 import { container, ImageExtend, QuillWatch } from 'quill-image-extend-module'
 import { getToken } from '@/libs/util'
@@ -111,6 +112,7 @@ export default {
       }
     }
     return {
+      url: httpurl,
       uploadList: [],
       // editValue: {
       //   title: '',
@@ -165,10 +167,10 @@ export default {
             loading: true,
             name: 'file',
             size: 2,
-            action: 'http://localhost:8083/uploadPhoto',
+            action: this.url + 'uploadPhoto',
             response: (res) => {
               this.uploadList.push({ 'url': res.url })
-              return 'http://localhost:8083/uploaded/' + res.url
+              return this.url + 'uploaded/' + res.url
             },
             headers: (xhr) => {
               xhr.withCredentials = true

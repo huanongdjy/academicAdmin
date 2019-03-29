@@ -71,6 +71,26 @@ export default [
     ]
   },
   {
+    path: '/roleManager',
+    name: 'roleManager',
+    meta: {
+      hideInBread: true
+    },
+    component: Main,
+    children: [
+      {
+        path: 'role_page',
+        name: 'role_page',
+        meta: {
+          title: '角色管理',
+          href: '',
+          icon: 'ios-book'
+        },
+        component: () => import('@/view/directive/roleManager.vue')
+      }
+    ]
+  },
+  {
     path: '/achievementmanage',
     name: 'achievementmanage',
     meta: {
@@ -92,8 +112,12 @@ export default [
   {
     path: '/activitymanage',
     name: 'activitymanage',
+    // meta: {
+    //   hideInBread: true
+    // },
     meta: {
-      hideInBread: true
+      icon: 'md-menu',
+      title: '学术活动管理'
     },
     component: Main,
     children: [
@@ -106,6 +130,15 @@ export default [
           icon: 'ios-book'
         },
         component: () => import('@/view/directive/myEssay.vue')
+      },
+      {
+        path: 'activityholded_page',
+        name: 'activityholded_page',
+        meta: {
+          icon: 'ios-book',
+          title: '已举办活动'
+        },
+        component: () => import('@/view/directive/essayholded.vue')
       }
     ]
   },
@@ -129,23 +162,43 @@ export default [
       }
     ]
   },
+  // {
+  //   path: '/record',
+  //   name: 'record',
+  //   meta: {
+  //     hideInBread: true
+  //   },
+  //   component: Main,
+  //   children: [
+  //     {
+  //       path: 'record_page',
+  //       name: 'record_page',
+  //       meta: {
+  //         title: '日志',
+  //         href: '',
+  //         icon: 'ios-book'
+  //       },
+  //       component: () => import('@/view/directive/myUserMananger.vue')
+  //     }
+  //   ]
+  // },
   {
-    path: '/record',
-    name: 'record',
+    path: '/collegeManager',
+    name: 'collegeManager',
     meta: {
       hideInBread: true
     },
     component: Main,
     children: [
       {
-        path: 'record_page',
-        name: 'record_page',
+        path: 'college_page',
+        name: 'college_page',
         meta: {
-          title: '日志',
+          title: '学院管理',
           href: '',
           icon: 'ios-book'
         },
-        component: () => import('@/view/directive/myUserMananger.vue')
+        component: () => import('@/view/directive/collegeManager.vue')
       }
     ]
   },

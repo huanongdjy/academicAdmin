@@ -15,7 +15,7 @@
       <Col span="24"> -->
     <span class="expand-key">照片: </span>
     <div class="demo-upload-list" v-for="item in row.photoList" :key="item.name">
-      <img :src="'http://localhost:8083/uploaded/' + item.url">
+      <img :src="httpurl + 'uploaded/' + item.url">
       <div class="demo-upload-list-cover">
         <Icon type="ios-eye-outline" @click.native="handleView(item.url)"></Icon>
         <Icon type="ios-trash-outline" @click.native="handleRemove(item)"></Icon>
@@ -25,17 +25,19 @@
       </Col>
     </Row> -->
     <Modal title="View Image" v-model="visible">
-      <img :src="'http://localhost:8083/uploaded/' +  viewUrl" v-if="visible" style="width: 100%">
+      <img :src="httpurl + 'uploaded/' +  viewUrl" v-if="visible" style="width: 100%">
     </Modal>
   </div>
 </template>
 <script>
+import httpurl from '@/config/httpURL'
 export default {
   props: {
     row: Object
   },
   data () {
     return {
+      httpurl: httpurl,
       imageList: [
         {
           'name': 'a42bdcc1178e62b4694c830f028db5c0',
