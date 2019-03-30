@@ -1,5 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
+// 引入加载菜单
+// import { loadMenu } from '@/libs/router-util'
 import routes from './routers'
 import store from '@/store'
 import iView from 'iview'
@@ -10,6 +12,7 @@ const { homeName } = config
 Vue.use(Router)
 const router = new Router({
   routes
+  // ...loadMenu()
   // mode: 'history'
 })
 const LOGIN_PAGE_NAME = 'login'

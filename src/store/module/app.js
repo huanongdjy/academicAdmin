@@ -13,6 +13,7 @@ import {
 } from '@/libs/util'
 import router from '@/router'
 import routers from '@/router/routers'
+// import { loadMenu } from '@/libs/router-util'
 import config from '@/config'
 const { homeName } = config
 
@@ -87,6 +88,12 @@ export default {
     },
     setHasReadErrorLoggerStatus (state, status = true) {
       state.hasReadErrorPage = status
+    },
+    updateMenuList (state, newroutes) {
+      routers.push(newroutes[0])
+      state.menuList = routers
+      console.log('state')
+      console.log(state.menuList)
     }
   }
 }

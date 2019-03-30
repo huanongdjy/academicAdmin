@@ -1,7 +1,7 @@
 <template>
   <Layout style="height: 100%" class="main">
     <Sider hide-trigger collapsible :width="256" :collapsed-width="64" v-model="collapsed" class="left-sider" :style="{overflow: 'hidden'}">
-      <side-menu accordion ref="sideMenu" :active-name="$route.name" :collapsed="collapsed" @on-select="turnToPage" :menu-list="menuList">
+      <side-menu accordion ref="sideMenu" :active-name="$route.name" :collapsed="collapsed" @on-select="turnToPage" :menu-list="menus">
         <!-- 需要放在菜单上面的内容，如Logo，写在side-menu标签内部，如下 -->
         <div class="logo-con">
           <img v-show="!collapsed" :src="maxLogo" key="max-logo" />
@@ -46,7 +46,6 @@ import Fullscreen from './components/fullscreen'
 import { mapMutations, mapActions, mapGetters } from 'vuex'
 import { getNewTagList, routeEqual } from '@/libs/util'
 import routers from '@/router/routers'
-import { getAccess } from '@/myapi/main'
 import minLogo from '@/assets/images/logo-min.jpg'
 import maxLogo from '@/assets/images/logo.jpg'
 import './main.less'
@@ -65,7 +64,8 @@ export default {
       collapsed: false,
       minLogo,
       maxLogo,
-      isFullscreen: false
+      isFullscreen: false,
+      menus: this.$store.getters.menuList
     }
   },
   computed: {
@@ -178,6 +178,11 @@ export default {
     },
     routers (newRoute) {
       this.init()
+    },
+    menuList (val) {
+      console.log('watch')
+      console.log(val)
+      this.menus = val
     }
   },
   mounted () {
@@ -189,10 +194,9 @@ export default {
     // this.getUnreadMessageCount()
   },
   created () {
-    getAccess().then(res => {
-      // routers[2].meta.access.push(res.data.memus[0].access)
-      this.setMeta(res.data.menu)
-    })
+    console.log('created')
+    console.log(JSON.stringify(this.$store.getters.menuList[0]))
+    console.log(JSON.stringify(this.$store.getters.menuList[1]))
   }
 }
 </script>

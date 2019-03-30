@@ -18,7 +18,6 @@ axios.defaults.baseURL = httpurl //   默认地址
 axios.interceptors.response.use(
   response => {
     if (response.data.resultCode === '404') {
-      // console.log("response.data.resultCode是404")
       // 返回 错误代码-1 清除ticket信息并跳转到登录页面
     //  cookie.del("ticket")
     //  window.location.href='http://login.com'

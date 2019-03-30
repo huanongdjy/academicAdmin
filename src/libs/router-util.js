@@ -1,9 +1,10 @@
 import { getToken, hasChild, localSave, localRead } from '@/libs/util'
 import Main from '@/components/main'
 import axios from 'axios'
-import config from '@/config'
+// import config from '@/config'
 import { forEach } from '@/libs/tools'
-const baseUrl = process.env.NODE_ENV === 'development' ? config.baseUrl.dev : config.baseUrl.pro
+import httpurl from '@/config/httpURL'
+// const baseUrl = process.env.NODE_ENV === 'development' ? config.baseUrl.dev : config.baseUrl.pro
 
 // 初始化路由
 export const initRouter = (vm) => {
@@ -12,15 +13,14 @@ export const initRouter = (vm) => {
   }
   let list = []
   // 模拟异步请求，改为您实际的后端请求路径
-  axios.get(baseUrl + '/system/permission/userMenuList', {
-    headers: { 'Authorization': 'Bearer ' + getToken() }
-  }).then(res => {
-    var menuData = res.data.data
+  axios.post(httpurl + 'getMenuList').then(res => {
+    var menuData = res.data.menuList
     // 这是后端回传给前端的数据，如上面所说的
-    console.log('menuData:', menuData)
     localSave('route', JSON.stringify(menuData))
     // 格式化菜单
     list = formatMenu(menuData)
+    console.log('格式化')
+    console.log(list)
     // 刷新界面菜单
     vm.$store.commit('updateMenuList', list)
   })
@@ -43,17 +43,34 @@ export const loadMenu = () => {
 export const formatMenu = (list) => {
   let res = []
   forEach(list, item => {
-    let obj = {
-      path: item.path,
-      name: item.name
-    }
-    obj.meta = item.meta
-    // 惰性递归 ****
-    if (item.parentId === 0) {
-      obj.component = Main
+    var obj
+    console.log(item.parent_id)
+    if (item.component === 'Main') {
+      obj = {
+        path: item.path,
+        name: item.name,
+        component: Main,
+        meta: {
+          hideInBread: true
+        }
+      }
+      // obj.
+      // obj.meta.hideInBread = true
+      // console.log(obj.meta.hideInBread)
     } else {
-      // 惰性递归 ****
+      obj = {
+        path: item.path,
+        name: item.name,
+        meta: {
+          title: item.title,
+          icon: 'ios-book'
+        }
+      }
+      // if (!item.title === null) {
+      //   obj.meta.title = item.title
+      // }
       let data = item.component
+      console.log('路径：' + item.title)
       // 这里需要改成自己定义的 .vue 夜间路径
       obj.component = () => import('@/view' + data)
     }
