@@ -7,6 +7,7 @@ export default {
   activityholded_page: '已举办活动',
   subjectmanage_page: '学科管理',
   role_page: '角色管理',
+  menumanager_page: '菜单管理',
   college_page: '学院管理',
   statistics_page: '统计分析',
   record_page: '日志',

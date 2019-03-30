@@ -15,6 +15,7 @@ import router from '@/router'
 import routers from '@/router/routers'
 // import { loadMenu } from '@/libs/router-util'
 import config from '@/config'
+// import user from './user'
 const { homeName } = config
 
 const closePage = (state, route) => {
@@ -35,7 +36,7 @@ export default {
     hasReadErrorPage: false
   },
   getters: {
-    menuList: (state, getters, rootState) => getMenuByRouter(routers, rootState.user.access),
+    menuList: (state, getters, rootState) => getMenuByRouter(routers, localRead('access')),
     errorCount: state => state.errorList.length
   },
   mutations: {
@@ -90,7 +91,9 @@ export default {
       state.hasReadErrorPage = status
     },
     updateMenuList (state, newroutes) {
-      routers.push(newroutes[0])
+      newroutes.forEach(item => {
+        routers.push(item)
+      })
       state.menuList = routers
       console.log('state')
       console.log(state.menuList)

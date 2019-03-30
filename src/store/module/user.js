@@ -3,7 +3,7 @@ import {
   logout,
   getUserInfo
 } from '@/api/user'
-import { setToken, getToken } from '@/libs/util'
+import { setToken, getToken, localSave } from '@/libs/util'
 // import { getAccess } from '@/myapi/main'
 // import routers from '@/router/routers'
 
@@ -13,7 +13,7 @@ export default {
     userId: '',
     avatorImgPath: '',
     token: getToken(),
-    access: '',
+    access: ['admin'],
     hasGetInfo: false,
     meta: []
   },
@@ -42,7 +42,8 @@ export default {
     }
   },
   getters: {
-    getUsername: state => state.username
+    getUsername: state => state.username,
+    getAccess: state => state.access
   },
   actions: {
     // 登录
@@ -64,6 +65,7 @@ export default {
             commit('setAvator', data.avator)
             commit('setUserName', data.username)
             commit('setUserId', data.userId)
+            localSave('access', [data.identity.access])
             commit('setAccess', [data.identity.access])
             commit('setHasGetInfo', true)
             setTimeout(() => {

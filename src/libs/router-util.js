@@ -2,7 +2,7 @@ import { getToken, hasChild, localSave, localRead } from '@/libs/util'
 import Main from '@/components/main'
 import axios from 'axios'
 // import config from '@/config'
-import { forEach } from '@/libs/tools'
+// import { forEach } from '@/libs/tools'
 import httpurl from '@/config/httpURL'
 // const baseUrl = process.env.NODE_ENV === 'development' ? config.baseUrl.dev : config.baseUrl.pro
 
@@ -16,6 +16,7 @@ export const initRouter = (vm) => {
   axios.post(httpurl + 'getMenuList').then(res => {
     var menuData = res.data.menuList
     // 这是后端回传给前端的数据，如上面所说的
+    console.log(JSON.stringify(menuData))
     localSave('route', JSON.stringify(menuData))
     // 格式化菜单
     list = formatMenu(menuData)
@@ -42,16 +43,17 @@ export const loadMenu = () => {
 // 格式化菜单
 export const formatMenu = (list) => {
   let res = []
-  forEach(list, item => {
+  list.forEach(item => {
     var obj
-    console.log(item.parent_id)
     if (item.component === 'Main') {
+      console.log('access' + item.access)
       obj = {
         path: item.path,
         name: item.name,
         component: Main,
         meta: {
-          hideInBread: true
+          hideInBread: true,
+          access: [item.access]
         }
       }
       // obj.
@@ -70,7 +72,6 @@ export const formatMenu = (list) => {
       //   obj.meta.title = item.title
       // }
       let data = item.component
-      console.log('路径：' + item.title)
       // 这里需要改成自己定义的 .vue 夜间路径
       obj.component = () => import('@/view' + data)
     }
