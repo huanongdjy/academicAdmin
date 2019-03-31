@@ -1,27 +1,16 @@
 <template>
   <div>
-    <!-- <Button type="primary" class="mybutton" @click="add">新增活动</Button> -->
     <Input search placeholder="请输入活动名称" class="search" v-model="searchValue" @on-search="mysearch">
       <Icon type="ios-search" slot="suffix" />
     </Input>
-    <!-- <Tabs :value="currname" @on-click="changeTab">
-      <TabPane label="已举办活动" name="name2">-->
-      <Table :columns="columns" :data="data1"></Table>
-      <div style="margin: 10px;overflow: hidden">
-        <div style="float: right;">
-          <Page :total="total" :current="currentPage" @on-change="changePage"></Page>
-        </div>
+    <br/>
+    <br/>
+    <Table :columns="columns" :data="data1"></Table>
+    <div style="margin: 10px;overflow: hidden">
+      <div style="float: right;">
+        <Page :total="total" :current="currentPage" @on-change="changePage"></Page>
       </div>
-      <!-- </TabPane>
-      <TabPane label="全部活动" name="name3">
-        <Table :columns="columns" :data="data1"></Table>
-        <div style="margin: 10px;overflow: hidden">
-          <div style="float: right;">
-            <Page :total="total" :current="currentPage" @on-change="changePage"></Page>
-          </div>
-        </div>
-      </TabPane>
-    </Tabs> -->
+    </div>
     <Modal title="活动终结" v-model="visibleSummarize" width="1000px">
       <Form ref="outcomeForm" :label-width="100" :model="outcomeForm" :rules="outVaild">
         <FormItem label="标题" prop="title">
@@ -386,6 +375,6 @@ export default {
 }
 .search {
   width: 200px;
-  margin-bottom: 10px
+  /* float: right */
 }
 </style>

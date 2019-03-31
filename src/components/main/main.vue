@@ -180,8 +180,6 @@ export default {
       this.init()
     },
     menuList (val) {
-      console.log('watch')
-      console.log(val)
       this.menus = val
     }
   },
@@ -192,11 +190,9 @@ export default {
     this.init()
     // 获取未读消息条数
     // this.getUnreadMessageCount()
-  },
-  created () {
-    console.log('created')
-    console.log(JSON.stringify(this.$store.getters.menuList[0]))
-    console.log(JSON.stringify(this.$store.getters.menuList[1]))
   }
+  // created () {
+  //   console.log(this.$store.getters.menuList)
+  // }
 }
 </script>

@@ -13,7 +13,7 @@ export default {
     userId: '',
     avatorImgPath: '',
     token: getToken(),
-    access: ['admin'],
+    access: [],
     hasGetInfo: false,
     meta: []
   },
@@ -28,7 +28,8 @@ export default {
       state.username = name
     },
     setAccess (state, access) {
-      state.access = access
+      state.access = []
+      state.access.push(access)
     },
     setToken (state, token) {
       state.token = token
@@ -71,7 +72,7 @@ export default {
             setTimeout(() => {
               resolve(res)
               resolve()
-            }, 1000)
+            }, 2000)
           } else {
             resolve(res)
             resolve()

@@ -125,7 +125,7 @@ export default [
         path: 'activitymanage_page',
         name: 'activitymanage_page',
         meta: {
-          title: '学术活动管理',
+          title: '未举办活动',
           href: '',
           icon: 'ios-book'
         },

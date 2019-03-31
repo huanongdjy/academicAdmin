@@ -1,4 +1,4 @@
-import { getToken, hasChild, localSave, localRead } from '@/libs/util'
+import { getToken, localSave, localRead } from '@/libs/util'
 import Main from '@/components/main'
 import axios from 'axios'
 // import config from '@/config'
@@ -16,17 +16,13 @@ export const initRouter = (vm) => {
   axios.post(httpurl + 'getMenuList').then(res => {
     var menuData = res.data.menuList
     // 这是后端回传给前端的数据，如上面所说的
-    console.log(JSON.stringify(menuData))
     localSave('route', JSON.stringify(menuData))
     // 格式化菜单
     list = formatMenu(menuData)
-    console.log('格式化')
-    console.log(list)
     // 刷新界面菜单
     vm.$store.commit('updateMenuList', list)
+    return list
   })
-
-  return list
 }
 
 // 加载菜单，在创建路由时使用
@@ -46,37 +42,49 @@ export const formatMenu = (list) => {
   list.forEach(item => {
     var obj
     if (item.component === 'Main') {
-      console.log('access' + item.access)
       obj = {
         path: item.path,
         name: item.name,
         component: Main,
         meta: {
-          hideInBread: true,
+          // hideInBread: true,
           access: [item.access]
-        }
+        },
+        children: []
       }
-      // obj.
-      // obj.meta.hideInBread = true
-      // console.log(obj.meta.hideInBread)
+      if (item.title === '学术活动管理') {
+        obj = {
+          path: item.path,
+          name: item.name,
+          component: Main,
+          meta: {
+            access: [item.access],
+            title: item.title,
+            icon: 'md-menu'
+          },
+          children: []
+        }
+        // obj.meta.title = item.title
+        // obj.meta.icon = 'md-menu'
+      }
     } else {
       obj = {
         path: item.path,
         name: item.name,
         meta: {
           title: item.title,
+          herf: '',
           icon: 'ios-book'
         }
       }
-      // if (!item.title === null) {
-      //   obj.meta.title = item.title
-      // }
       let data = item.component
-      // 这里需要改成自己定义的 .vue 夜间路径
       obj.component = () => import('@/view' + data)
     }
-    if (hasChild(item)) {
-      obj.children = formatMenu(item.children)
+    if (!(item.children === null)) {
+      let retlist = formatMenu(item.children)
+      retlist.forEach(it => {
+        obj.children.push(it)
+      })
     }
     res.push(obj)
   })

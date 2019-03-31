@@ -17,7 +17,7 @@ import Main from '@/components/main'
  * }
  */
 
-export const mainRouter = [
+export default [
   {
     path: '/login',
     name: 'login',
@@ -51,6 +51,25 @@ export const mainRouter = [
     ]
   },
   {
+    path: '/usermanage',
+    name: 'usermanage',
+    meta: {
+      hideInBread: true
+    },
+    component: Main,
+    children: [
+      {
+        path: 'usermanage_page',
+        name: 'usermanage_page',
+        meta: {
+          title: '用户管理',
+          icon: 'ios-book'
+        },
+        component: () => import('@/view/directive/myUserMananger')
+      }
+    ]
+  },
+  {
     path: '/roleManager',
     name: 'roleManager',
     meta: {
@@ -69,9 +88,158 @@ export const mainRouter = [
         component: () => import('@/view/directive/roleManager.vue')
       }
     ]
+  },
+  {
+    path: '/achievementmanage',
+    name: 'achievementmanage',
+    meta: {
+      hideInBread: true
+    },
+    component: Main,
+    children: [
+      {
+        path: 'achievementmanage_page',
+        name: 'achievementmanage_page',
+        meta: {
+          title: '学术成果管理',
+          icon: 'ios-book'
+        },
+        component: () => import('@/view/directive/myAchievementManager.vue')
+      }
+    ]
+  },
+  {
+    path: '/activitymanage',
+    name: 'activitymanage',
+    // meta: {
+    //   hideInBread: true
+    // },
+    meta: {
+      icon: 'md-menu',
+      title: '学术活动管理'
+    },
+    component: Main,
+    children: [
+      {
+        path: 'activitymanage_page',
+        name: 'activitymanage_page',
+        meta: {
+          title: '学术活动管理',
+          href: '',
+          icon: 'ios-book'
+        },
+        component: () => import('@/view/directive/myEssay.vue')
+      },
+      {
+        path: 'activityholded_page',
+        name: 'activityholded_page',
+        meta: {
+          icon: 'ios-book',
+          title: '已举办活动'
+        },
+        component: () => import('@/view/directive/essayholded.vue')
+      }
+    ]
+  },
+  {
+    path: '/subjectmanage',
+    name: 'subjectmanage',
+    meta: {
+      hideInBread: true
+    },
+    component: Main,
+    children: [
+      {
+        path: 'subjectmanage_page',
+        name: 'subjectmanage_page',
+        meta: {
+          title: '学科管理',
+          href: '',
+          icon: 'ios-book'
+        },
+        component: () => import('@/view/directive/myTypeManager.vue')
+      }
+    ]
+  },
+  {
+    path: '/menumanage',
+    name: 'menumanage',
+    meta: {
+      hideInBread: true
+    },
+    component: Main,
+    children: [
+      {
+        path: 'menumanage_page',
+        name: 'menumanage_page',
+        meta: {
+          title: '菜单管理',
+          href: '',
+          icon: 'ios-book'
+        },
+        component: () => import('@/view/directive/menuManager.vue')
+      }
+    ]
+  },
+  // {
+  //   path: '/record',
+  //   name: 'record',
+  //   meta: {
+  //     hideInBread: true
+  //   },
+  //   component: Main,
+  //   children: [
+  //     {
+  //       path: 'record_page',
+  //       name: 'record_page',
+  //       meta: {
+  //         title: '日志',
+  //         href: '',
+  //         icon: 'ios-book'
+  //       },
+  //       component: () => import('@/view/directive/myUserMananger.vue')
+  //     }
+  //   ]
+  // },
+  {
+    path: '/collegeManager',
+    name: 'collegeManager',
+    meta: {
+      hideInBread: true
+    },
+    component: Main,
+    children: [
+      {
+        path: 'college_page',
+        name: 'college_page',
+        meta: {
+          title: '学院管理',
+          href: '',
+          icon: 'ios-book'
+        },
+        component: () => import('@/view/directive/collegeManager.vue')
+      }
+    ]
+  },
+  {
+    path: '/personalManager',
+    name: 'personalManager',
+    meta: {
+      hideInBread: true,
+      hideInMenu: true
+    },
+    component: Main,
+    children: [
+      {
+        path: 'personal_page',
+        name: 'personal_page',
+        meta: {
+          title: '个人中心',
+          href: '',
+          icon: 'ios-book'
+        },
+        component: () => import('@/view/directive/personalManager.vue')
+      }
+    ]
   }
-]
-
-export default [
-  ...mainRouter
 ]

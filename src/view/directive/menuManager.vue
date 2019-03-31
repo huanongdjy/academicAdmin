@@ -1,9 +1,10 @@
 <template>
   <div>
-    <Button type="primary" class="mybutton" @click="addCol">新增学院</Button>
     <Input search placeholder="请输入名称" class="search" v-model="searchValue" @on-search="mysearch">
       <Icon type="ios-search" slot="suffix" />
     </Input>
+    <br/>
+    <br/>
     <Table border :data="tableData1" :columns="tableColumns1">
     </Table>
     <div style="margin: 10px;overflow: hidden">
@@ -16,11 +17,15 @@
       :title="title"
       >
       <Form ref="formCustom" :model="formCustom" :rules="ruleCustom" :label-width="80">
-        <FormItem label="名称" prop="college_name">
-          <Input type="text" v-model="formCustom.college_name"></Input>
+        <FormItem label="菜单名称" prop="title">
+          <Input type="text" v-model="formCustom.title"></Input>
         </FormItem>
-        <FormItem label="描述" prop="description">
-          <Input type="text" v-model="formCustom.description"></Input>
+        <FormItem label="权限" prop="access">
+          <select v-model="formCustom.access">
+            <option value="sysadmin">sysadmin</option>
+            <option value="admin">admin</option>
+          </select>
+          <!-- <Input type="text" v-model="formCustom.access"></Input> -->
         </FormItem>
       </Form>
       <div slot="footer">
@@ -32,37 +37,38 @@
 </template>
 
 <script>
-import { getColleges, addCollege, deleteCollege, updateCollege, searchCollege } from '@/myapi/collegeManager'
+import { getMenusWithPage, updateMenu, searchMenu } from '@/myapi/menuManager'
 export default {
   data () {
-    const validateCollege_name = (rule, value, callback) => {
+    const validateTitle = (rule, value, callback) => {
       if (value === '') {
-        callback(new Error('请输入学院名称'))
+        callback(new Error('请输入菜单名称'))
       } else {
         callback()
       }
     }
-    const validateDescription = (rule, value, callback) => {
+    const validateAccess = (rule, value, callback) => {
       if (value === '') {
-        callback(new Error('请输入类型的描述'))
+        callback(new Error('请选择权限'))
       } else {
         callback()
       }
     }
     return {
       formCustom: {
-        college_name: '',
-        description: ''
+        title: '',
+        access: '',
+        parent_id: ''
       },
       title: '',
       tomethod: '',
       searchValue: '',
       ruleCustom: {
-        college_name: [
-          { validator: validateCollege_name, trigger: 'blur' }
+        title: [
+          { validator: validateTitle, trigger: 'blur' }
         ],
-        description: [
-          { validator: validateDescription, trigger: 'blur' }
+        access: [
+          { validator: validateAccess, trigger: 'blur' }
         ]
       },
       modal: false,
@@ -72,12 +78,12 @@ export default {
       tableData1: [],
       tableColumns1: [
         {
-          title: '学院名称',
-          key: 'college_name'
+          title: '菜单名称',
+          key: 'title'
         },
         {
-          title: '描述',
-          key: 'description'
+          title: '权限',
+          key: 'access'
         },
         {
           title: '操作',
@@ -99,18 +105,7 @@ export default {
                     this.show(params.index)
                   }
                 }
-              }, '编辑'),
-              h('Button', {
-                props: {
-                  type: 'error',
-                  size: 'small'
-                },
-                on: {
-                  click: () => {
-                    this.remove(params.index)
-                  }
-                }
-              }, '删除')
+              }, '编辑')
             ])
           }
         }
@@ -119,7 +114,7 @@ export default {
   },
   methods: {
     changePage (index) {
-      getColleges(10, index).then(res => {
+      getMenusWithPage(10, index).then(res => {
         let data = res.data.page
         if (res.data.resultCode === '200') {
           this.tableData1 = []
@@ -134,33 +129,18 @@ export default {
     show (index) {
       this.modal = true
       let data = this.tableData1[index]
-      this.formCustom.college_name = data.college_name
-      this.formCustom.description = data.description
-      this.formCustom.college_id = data.college_id
-      this.title = '学院信息编辑'
+      this.formCustom.title = data.title
+      this.formCustom.access = data.access
+      this.formCustom.menu_id = data.menu_id
+      this.formCustom.parent_id = data.parent_id
+      this.title = '菜单信息编辑'
       this.tomethod = 'update'
-    },
-    remove (index) {
-      deleteCollege(this.tableData1[index].college_id).then(res => {
-        if (res.data.resultCode === 200) {
-          this.$Message.info(res.data.message)
-          // this.tableData1.splice(index, 1)
-          this.changePage(this.currentPage)
-        } else {
-          this.$Message.info('删除类型失败')
-        }
-      })
     },
     ok () {
       this.$refs['formCustom'].validate(valid => {
         if (valid) {
           if (this.tomethod === 'update') {
-            updateCollege(this.formCustom).then(res => {
-              this.$Message.info(res.data.message)
-              this.changePage(this.currentPage)
-            })
-          } else if (this.tomethod === 'add') {
-            addCollege(this.formCustom).then(res => {
+            updateMenu(this.formCustom).then(res => {
               this.$Message.info(res.data.message)
               this.changePage(this.currentPage)
             })
@@ -172,29 +152,23 @@ export default {
     cancel () {
       this.modal = false
     },
-    addCol () {
-      this.modal = true
-      this.formCustom.college_name = ''
-      this.formCustom.description = ''
-      this.title = '新增学院'
-      this.tomethod = 'add'
-    },
     mysearch () {
-      searchCollege(this.searchValue).then(res => {
+      searchMenu(this.searchValue).then(res => {
         if (res.data.resultCode === 200 && !(res.data.essays.length === 0)) {
           this.tableData1 = []
           res.data.essays.forEach(item => {
             this.tableData1.push(item)
           })
         } else {
-          this.$Message.info('该类型名称不存在')
+          this.$Message.info('该菜单名称不存在')
         }
       })
     }
   },
   created () {
-    getColleges(10, 1).then(res => {
+    getMenusWithPage(10, 1).then(res => {
       let data = res.data.page
+      console.log(data)
       if (res.data.resultCode === '200') {
         data.list.forEach(element => {
           this.tableData1.push(element)
@@ -213,6 +187,5 @@ export default {
   }
   .search {
     width: 200px;
-    float: right
   }
 </style>

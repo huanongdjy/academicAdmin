@@ -24,7 +24,7 @@
       </i-col>
       <i-col :md="24" :lg="8" style="margin-bottom: 20px;">
         <Card shadow>
-          <achievement-pie style="height: 300px;" :value="pieData" text="成果"></achievement-pie>
+          <achievement-pie style="height: 300px;" :value="achievementPieData" text="成果"></achievement-pie>
         </Card>
       </i-col>
     </Row>
@@ -41,7 +41,7 @@ import InforCard from '_c/info-card'
 import CountTo from '_c/count-to'
 import { ChartAttendancePie, ChartBar, achievementPie } from '_c/charts'
 // import lineChart from './lineChart.vue'
-import { getInforCardData, getEssayPieData } from '@/myapi/analysis'
+import { getInforCardData, getEssayPieData, getAchievementPieData } from '@/myapi/analysis'
 export default {
   name: 'home',
   components: {
@@ -80,7 +80,8 @@ export default {
         // { title: '新增互动', icon: 'md-chatbubbles', count: 12, color: '#E46CBB' },
         // { title: '新增页面', icon: 'md-map', count: 14, color: '#9A66E4' }
       ],
-      pieData: []
+      pieData: [],
+      achievementPieData: []
     }
   },
   mounted () {
@@ -93,18 +94,21 @@ export default {
         let aftdate = this.getAfterDay()
         this._getInforCardData(today, aftdate)
         this._getAttendanceNumPieData(today, aftdate)
+        this._getAchievementPieData(today, aftdate)
         this.begTime = today
         this.endTime = aftdate
       } else if (value === '一周之内') {
         let prevweek = this.getPrevWeek()
         this._getInforCardData(prevweek, today)
         this._getAttendanceNumPieData(prevweek, today)
+        this._getAchievementPieData(prevweek, today)
         this.begTime = prevweek
         this.endTime = today
       } else if (value === '一个月之内') {
         let prevMonth = this.getPrevMonth()
         this._getInforCardData(prevMonth, today)
         this._getAttendanceNumPieData(prevMonth, today)
+        this._getAchievementPieData(prevMonth, today)
         this.begTime = prevMonth
         this.endTime = today
       }
@@ -113,6 +117,7 @@ export default {
       if (this.endTime > this.begTime) {
         this._getInforCardData(this.begTime, this.endTime)
         this._getAttendanceNumPieData(this.begTime, this.endTime)
+        this._getAchievementPieData(this.begTime, this.endTime)
       } else {
         this.$Message.warning('结束日期要大于开始日期')
       }
@@ -135,6 +140,15 @@ export default {
         this.pieData.splice(0, this.pieData.length)
         data.forEach(element => {
           this.pieData.push({ 'value': element.value, 'name': element.name, 'tip': element.tip })
+        })
+      })
+    },
+    _getAchievementPieData (begTime, endTime) {
+      getAchievementPieData(begTime, endTime).then(res => {
+        let data = res.data
+        this.achievementPieData.splice(0, this.achievementPieData.length)
+        data.forEach(element => {
+          this.achievementPieData.push({ 'value': element.value, 'name': element.name, 'tip': element.tip })
         })
       })
     },

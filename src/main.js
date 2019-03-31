@@ -46,7 +46,6 @@ new Vue({
   el: '#app',
   router,
   mounted() {
-    // 调用方法，动态生成路由
     initRouter(this);
   },
   i18n,

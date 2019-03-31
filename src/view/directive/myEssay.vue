@@ -161,7 +161,6 @@ export default {
     }
     const validateContent = (rule, value, callback) => {
       if (value === '') {
-        console.log('yanz')
         callback(new Error('请输入内容'))
       } else {
         callback()

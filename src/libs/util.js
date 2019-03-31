@@ -23,8 +23,9 @@ export const hasChild = (item) => {
 
 const showThisMenuEle = (item, access) => {
   if (item.meta && item.meta.access && item.meta.access.length) {
-    if (hasOneOf(item.meta.access, access)) return true
-    else return false
+    if (hasOneOf(item.meta.access, access)) {
+      return true
+    } else return false
   } else return true
 }
 /**
@@ -32,8 +33,6 @@ const showThisMenuEle = (item, access) => {
  * @returns {Array}
  */
 export const getMenuByRouter = (list, access) => {
-  console.log('获取路由列表')
-  console.log(access)
   let res = []
   forEach(list, item => {
     if (!item.meta || (item.meta && !item.meta.hideInMenu)) {

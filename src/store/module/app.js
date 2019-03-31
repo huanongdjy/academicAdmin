@@ -13,7 +13,7 @@ import {
 } from '@/libs/util'
 import router from '@/router'
 import routers from '@/router/routers'
-// import { loadMenu } from '@/libs/router-util'
+import { loadMenu } from '@/libs/router-util'
 import config from '@/config'
 // import user from './user'
 const { homeName } = config
@@ -36,7 +36,7 @@ export default {
     hasReadErrorPage: false
   },
   getters: {
-    menuList: (state, getters, rootState) => getMenuByRouter(routers, localRead('access')),
+    menuList: (state, getters, rootState) => getMenuByRouter(loadMenu(), localRead('access')),
     errorCount: state => state.errorList.length
   },
   mutations: {
@@ -91,12 +91,13 @@ export default {
       state.hasReadErrorPage = status
     },
     updateMenuList (state, newroutes) {
+      let currouters = routers
       newroutes.forEach(item => {
-        routers.push(item)
+        currouters.push(item)
       })
-      state.menuList = routers
-      console.log('state')
-      console.log(state.menuList)
+      // router.addRouter(r)
+      // console.log(router)
+      state.menuList = currouters
     }
   }
 }
