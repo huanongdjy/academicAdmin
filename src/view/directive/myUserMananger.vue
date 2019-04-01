@@ -227,6 +227,8 @@ export default {
           this.$Message.info(res.data.message)
           // this.tableData1.splice(index, 1)
           this.changePage(this.currentPage)
+        } else if (res.data.resultCode === '400') {
+          this.$Message.info(res.data.message)
         } else {
           this.$Message.info('删除用户失败')
         }
@@ -265,6 +267,8 @@ export default {
         if (res.data.resultCode === 200) {
           this.tableData1 = []
           this.tableData1.push(res.data.user)
+        } else if (res.data.resultCode === '400') {
+          this.$Message.info(res.data.message)
         } else {
           this.$Message.info('该用户名不存在')
         }
@@ -280,6 +284,8 @@ export default {
         })
         this.total = data.total
         this.currentPage = data.pageNum
+      } else if (res.data.resultCode === '400') {
+        this.$Message.info(res.data.message)
       }
     })
   }

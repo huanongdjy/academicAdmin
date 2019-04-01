@@ -489,6 +489,8 @@ export default {
           })
           this.total = data.total
           this.currentPage = data.pageNum
+        } else if (res.data.resultCode === '400') {
+          this.$Message.info(res.data.message)
         }
       })
     },
@@ -499,6 +501,8 @@ export default {
           res.data.achievements.forEach(item => {
             this.data1.push(item)
           })
+        } else if (res.data.resultCode === '400') {
+          this.$Message.info(res.data.message)
         } else {
           this.$Message.info('该成果名不存在')
         }
@@ -527,6 +531,8 @@ export default {
           this.$Message.info(res.data.message)
           // this.tableData1.splice(index, 1)
           this.changePage(this.currentPage)
+        } else if (res.data.resultCode === '400') {
+          this.$Message.info(res.data.message)
         } else {
           this.$Message.info('删除成果失败')
         }
@@ -554,6 +560,8 @@ export default {
                   }
                 })
                 this.$Message.info(res.data.message)
+              } else if (res.data.resultCode === '400') {
+                this.$Message.info(res.data.message)
               }
             })
             this.visibleAdd = false
@@ -579,8 +587,12 @@ export default {
                     })
                     this.total = data.total
                     this.currentPage = data.pageNum
+                  } else if (res.data.resultCode === '400') {
+                    this.$Message.info(res.data.message)
                   }
                 })
+                this.$Message.info(res.data.message)
+              } else if (res.data.resultCode === '400') {
                 this.$Message.info(res.data.message)
               }
             })
@@ -652,6 +664,8 @@ export default {
         })
         this.total = data.total
         this.currentPage = data.pageNum
+      } else if (res.data.resultCode === '400') {
+        this.$Message.info(res.data.message)
       }
     })
     getAllType().then(res => {
@@ -659,6 +673,8 @@ export default {
         res.data.typeList.forEach(element => {
           this.typeList.push(element)
         })
+      } else if (res.data.resultCode === '400') {
+        this.$Message.info(res.data.message)
       }
     })
   }

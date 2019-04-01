@@ -448,6 +448,8 @@ export default {
           })
           this.total = data.total
           this.currentPage = data.pageNum
+        } else if (res.data.resultCode === '400') {
+          this.$Message.info(res.data.message)
         }
       })
     },
@@ -461,6 +463,8 @@ export default {
           })
           this.total = data.total
           this.currentPage = data.pageNum
+        } else if (res.data.resultCode === '400') {
+          this.$Message.info(res.data.message)
         }
       })
     },
@@ -472,6 +476,8 @@ export default {
           res.data.essays.forEach(item => {
             this.data1.push(item)
           })
+        } else if (res.data.resultCode === '400') {
+          this.$Message.info(res.data.message)
         } else {
           this.$Message.info('该活动名不存在')
         }
@@ -551,6 +557,8 @@ export default {
           this.$Message.info(res.data.message)
           // this.tableData1.splice(index, 1)
           this.changePage(this.currentPage)
+        } else if (res.data.resultCode === '400') {
+          this.$Message.info(res.data.message)
         } else {
           this.$Message.info('删除活动失败')
         }
@@ -599,8 +607,12 @@ export default {
                     })
                     this.total = data.total
                     this.currentPage = data.pageNum
+                  } else if (res.data.resultCode === '400') {
+                    this.$Message.info(res.data.message)
                   }
                 })
+                this.$Message.info(res.data.message)
+              } else if (res.data.resultCode === '400') {
                 this.$Message.info(res.data.message)
               }
             })
@@ -616,6 +628,8 @@ export default {
                     })
                     this.total = data.total
                     this.currentPage = data.pageNum
+                  } else if (res.data.resultCode === '400') {
+                    this.$Message.info(res.data.message)
                   }
                 })
                 this.$Message.info(res.data.message)
@@ -644,13 +658,19 @@ export default {
         })
         this.total = data.total
         this.currentPage = data.pageNum
+      } else if (res.data.resultCode === '400') {
+        this.$Message.info(res.data.message)
       }
     })
     getAllType().then(res => {
-      let data = res.data
-      data.typeList.forEach(item => {
-        this.typeList.push(item)
-      })
+      if (res.data.resultCode === '200') {
+        let data = res.data
+        data.typeList.forEach(item => {
+          this.typeList.push(item)
+        })
+      } else if (res.data.resultCode === '400') {
+        this.$Message.info(res.data.message)
+      }
     })
   }
 }

@@ -214,12 +214,16 @@ export default {
                 // })
                 this.$emit('updatePage')
                 this.$Message.info(res.data.message)
+              } else if (res.data.resultCode === '400') {
+                this.$Message.info(res.data.message)
               }
             })
           } else if (this.tomethod === 'update') {
             updateEssay(this.editValue).then(res => {
               if (res.data.resultCode === 200) {
                 this.$emit('updatePage')
+                this.$Message.info(res.data.message)
+              } else if (res.data.resultCode === '400') {
                 this.$Message.info(res.data.message)
               }
             })

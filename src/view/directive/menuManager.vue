@@ -123,6 +123,8 @@ export default {
           })
           this.total = data.total
           this.currentPage = data.pageNum
+        } else if (res.data.resultCode === '400') {
+          this.$Message.info(res.data.message)
         }
       })
     },
@@ -159,6 +161,8 @@ export default {
           res.data.essays.forEach(item => {
             this.tableData1.push(item)
           })
+        } else if (res.data.resultCode === '400') {
+          this.$Message.info(res.data.message)
         } else {
           this.$Message.info('该菜单名称不存在')
         }
@@ -175,6 +179,8 @@ export default {
         })
         this.total = data.total
         this.currentPage = data.pageNum
+      } else if (res.data.resultCode === '400') {
+        this.$Message.info(res.data.message)
       }
     })
   }
