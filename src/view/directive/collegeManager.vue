@@ -128,7 +128,7 @@ export default {
           })
           this.total = data.total
           this.currentPage = data.pageNum
-        } else if (res.data.resultCode === '400') {
+        } else if (res.data.resultCode === 400) {
           this.$Message.info(res.data.message)
         }
       })
@@ -148,7 +148,7 @@ export default {
           this.$Message.info(res.data.message)
           // this.tableData1.splice(index, 1)
           this.changePage(this.currentPage)
-        } else if (res.data.resultCode === '400') {
+        } else if (res.data.resultCode === 400) {
           this.$Message.info(res.data.message)
         } else {
           this.$Message.info('删除类型失败')
@@ -163,7 +163,7 @@ export default {
               if (res.data.resultCode === '200') {
                 this.$Message.info(res.data.message)
                 this.changePage(this.currentPage)
-              } else if (res.data.resultCode === '400') {
+              } else if (res.data.resultCode === 400) {
                 this.$Message.info(res.data.message)
               }
             })
@@ -172,7 +172,7 @@ export default {
               if (res.data.resultCode === '200') {
                 this.$Message.info(res.data.message)
                 this.changePage(this.currentPage)
-              } else if (res.data.resultCode === '400') {
+              } else if (res.data.resultCode === 400) {
                 this.$Message.info(res.data.message)
               }
             })
@@ -198,7 +198,7 @@ export default {
           res.data.essays.forEach(item => {
             this.tableData1.push(item)
           })
-        } else if (res.data.resultCode === '400') {
+        } else if (res.data.resultCode === 400) {
           this.$Message.info(res.data.message)
         } else {
           this.$Message.info('该类型名称不存在')
@@ -215,7 +215,7 @@ export default {
         })
         this.total = data.total
         this.currentPage = data.pageNum
-      } else if (res.data.resultCode === '400') {
+      } else if (res.data.resultCode === 400) {
         this.$Message.info(res.data.message)
       }
     })

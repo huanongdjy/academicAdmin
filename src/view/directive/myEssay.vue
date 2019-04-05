@@ -16,9 +16,9 @@
           <Input v-model="editValue.title" placeholder="请输入..."></Input>
         </FormItem>
         <FormItem label="类型" prop="type_id">
-          <select v-model="editValue.type_id" >
-            <option v-for="type in typeList" :key="type.type_id" :value="type.type_id">{{ type.type_name }}</option>
-          </select>
+          <Select v-model="editValue.type_id">
+            <Option v-for="type in typeList" :key="type.type_id" :value="type.type_id">{{ type.type_name }}</Option>
+          </Select>
         </FormItem>
         <FormItem label="摘要" prop="summary">
           <Input v-model="editValue.summary" placeholder="请输入..."></Input>
@@ -72,9 +72,9 @@
           <Input v-model="editValue.title" placeholder="请输入..."></Input>
         </FormItem>
         <FormItem label="类型" prop="type_id">
-          <select v-model="editValue.type_id">
-            <option v-for="type in typeList" :key="type.type_id" :value="type.type_id">{{ type.type_name }}</option>
-          </select>
+          <Select v-model="editValue.type_id">
+            <Option v-for="type in typeList" :key="type.type_id" :value="type.type_id">{{ type.type_name }}</Option>
+          </Select>
         </FormItem>
         <FormItem label="摘要" prop="summary">
           <Input v-model="editValue.summary" placeholder="请输入..."></Input>
@@ -109,7 +109,8 @@
         <FormItem>
           <quillEditor v-model="editValue.content"
             ref="myQuillEditor"
-            :options="editorOption">
+            :options="editorOption"
+            @focus="onEditorFocus">
           </quillEditor>
         </FormItem>
         <FormItem>
@@ -409,7 +410,7 @@ export default {
           ImageExtend: {
             loading: true,
             name: 'file',
-            size: 2,
+            // size: 2,
             action: this.httpurl + 'uploadPhoto',
             response: (res) => {
               this.uploadList.push({ 'url': res.url })
@@ -437,6 +438,23 @@ export default {
       changeEssayToshow(id, toshow).then(res => {
         this.$Message.warning(res.data.message)
       })
+    },
+    onEditorFocus (val) {
+      console.log(this.$refs.myQuillEditor.quill.selection.savedRange.index)
+      let range = val.getSelection()
+      if (range) {
+        if (range.length === 0) {
+          console.log('User cursor is at index', range.index)
+          this.length = range.index
+        } else {
+          var text = val.getText(range.index, range.length)
+          console.log('User has highlighted: ', text)
+          this.length = range.index
+        }
+      } else {
+        this.length = val.getText().length
+      }
+      console.log(this.length)
     },
     changePage (index) {
       getEssays(10, index, 'newactivity').then(res => {
@@ -663,7 +681,7 @@ export default {
       }
     })
     getAllType().then(res => {
-      if (res.data.resultCode === '200') {
+      if (res.data.resultCode === 200) {
         let data = res.data
         data.typeList.forEach(item => {
           this.typeList.push(item)

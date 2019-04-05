@@ -19,7 +19,7 @@
     <Row :gutter="20" style="margin-top: 10px;">
       <i-col :md="24" :lg="8" style="margin-bottom: 20px;">
         <Card shadow>
-          <chart-attendance-pie style="height: 300px;" :value="pieData" text="参加人数"></chart-attendance-pie>
+          <chart-attendance-pie style="height: 300px;" :value="pieData" text="学术活动"></chart-attendance-pie>
         </Card>
       </i-col>
       <i-col :md="24" :lg="8" style="margin-bottom: 20px;">

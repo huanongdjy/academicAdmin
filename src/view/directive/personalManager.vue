@@ -87,7 +87,7 @@ export default {
         this.formValidate.mailbox = res.data.user.mailbox
         this.formValidate.phoneNumber = res.data.user.phoneNumber
         this.formValidate.identity = res.data.user.identity.identity_id
-      } else if (res.data.resultCode === '400') {
+      } else if (res.data.resultCode === 400) {
         this.$Message.info(res.data.message)
       } else {
         this.$Message.error('获取用户信息失败')

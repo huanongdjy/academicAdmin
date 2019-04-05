@@ -88,6 +88,8 @@ export default {
         logout().then(() => {
           commit('setToken', '')
           commit('setAccess', [])
+          localSave('access', [])
+          localSave('route', [])
           resolve()
         }).catch(err => {
           reject(err)

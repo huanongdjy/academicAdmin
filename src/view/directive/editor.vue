@@ -214,7 +214,7 @@ export default {
                 // })
                 this.$emit('updatePage')
                 this.$Message.info(res.data.message)
-              } else if (res.data.resultCode === '400') {
+              } else if (res.data.resultCode === 400) {
                 this.$Message.info(res.data.message)
               }
             })
@@ -223,7 +223,7 @@ export default {
               if (res.data.resultCode === 200) {
                 this.$emit('updatePage')
                 this.$Message.info(res.data.message)
-              } else if (res.data.resultCode === '400') {
+              } else if (res.data.resultCode === 400) {
                 this.$Message.info(res.data.message)
               }
             })

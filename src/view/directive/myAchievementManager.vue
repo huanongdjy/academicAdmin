@@ -48,9 +48,12 @@
           </Row>
         </FormItem>
         <FormItem label="类型"  prop="type_id">
-          <select v-model="formAdd.type_id" v-for="type in typeList" :key="type.type_id">
-            <option :value="type.type_id">{{ type.type_name }}</option>
-          </select>
+          <Select v-model="formItem.type_id">
+            <Option v-for="type in typeList" :key="type.type_id" :value="type.type_id">{{ type.type_name }}</Option>
+            <!-- <Option value="beijing">New York</Option>
+            <Option value="shanghai">London</Option>
+            <Option value="shenzhen">Sydney</Option> -->
+          </Select>
         </FormItem>
         <FormItem label="是否显示">
           <i-switch v-model="formItem.toshow" size="large">
@@ -150,9 +153,12 @@
           </Row>
         </FormItem>
         <FormItem label="类型"  prop="type_id">
-          <select v-model="formAdd.type_id" v-for="type in typeList" :key="type.type_id">
-            <option :value="type.type_id">{{ type.type_name }}</option>
-          </select>
+          <Select v-model="formAdd.type_id">
+            <Option v-for="type in typeList" :key="type.type_id" :value="type.type_id">{{ type.type_name }}</Option>
+            <!-- <Option value="beijing">New York</Option>
+            <Option value="shanghai">London</Option>
+            <Option value="shenzhen">Sydney</Option> -->
+          </Select>
         </FormItem>
         <FormItem label="是否显示">
           <i-switch v-model="formAdd.toshow" size="large">
@@ -489,7 +495,7 @@ export default {
           })
           this.total = data.total
           this.currentPage = data.pageNum
-        } else if (res.data.resultCode === '400') {
+        } else if (res.data.resultCode === 400) {
           this.$Message.info(res.data.message)
         }
       })
@@ -501,7 +507,7 @@ export default {
           res.data.achievements.forEach(item => {
             this.data1.push(item)
           })
-        } else if (res.data.resultCode === '400') {
+        } else if (res.data.resultCode === 400) {
           this.$Message.info(res.data.message)
         } else {
           this.$Message.info('该成果名不存在')
@@ -531,7 +537,7 @@ export default {
           this.$Message.info(res.data.message)
           // this.tableData1.splice(index, 1)
           this.changePage(this.currentPage)
-        } else if (res.data.resultCode === '400') {
+        } else if (res.data.resultCode === 400) {
           this.$Message.info(res.data.message)
         } else {
           this.$Message.info('删除成果失败')
@@ -560,7 +566,7 @@ export default {
                   }
                 })
                 this.$Message.info(res.data.message)
-              } else if (res.data.resultCode === '400') {
+              } else if (res.data.resultCode === 400) {
                 this.$Message.info(res.data.message)
               }
             })
@@ -587,12 +593,12 @@ export default {
                     })
                     this.total = data.total
                     this.currentPage = data.pageNum
-                  } else if (res.data.resultCode === '400') {
+                  } else if (res.data.resultCode === 400) {
                     this.$Message.info(res.data.message)
                   }
                 })
                 this.$Message.info(res.data.message)
-              } else if (res.data.resultCode === '400') {
+              } else if (res.data.resultCode === 400) {
                 this.$Message.info(res.data.message)
               }
             })
@@ -620,6 +626,14 @@ export default {
     add () {
       this.visibleAdd = true
       this.tomethod = 'add'
+      this.formAdd.id = ''
+      this.formAdd.title = ''
+      this.formAdd.member = ''
+      this.formAdd.content = ''
+      this.formAdd.date = ''
+      this.formAdd.time = ''
+      this.formAdd.type_id = ''
+      this.formAdd.photoList = []
     },
     handleView (url) {
       this.viewUrl = url
@@ -664,7 +678,7 @@ export default {
         })
         this.total = data.total
         this.currentPage = data.pageNum
-      } else if (res.data.resultCode === '400') {
+      } else if (res.data.resultCode === 400) {
         this.$Message.info(res.data.message)
       }
     })
@@ -673,7 +687,7 @@ export default {
         res.data.typeList.forEach(element => {
           this.typeList.push(element)
         })
-      } else if (res.data.resultCode === '400') {
+      } else if (res.data.resultCode === 400) {
         this.$Message.info(res.data.message)
       }
     })

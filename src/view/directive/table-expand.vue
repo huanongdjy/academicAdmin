@@ -13,14 +13,14 @@
     </Row>
     <!-- <Row class="expand-row">
       <Col span="24"> -->
-    <span class="expand-key">照片: </span>
+    <!-- <span class="expand-key">照片: </span>
     <div class="demo-upload-list" v-for="item in row.photoList" :key="item.name">
       <img :src="httpurl + 'uploaded/' + item.url">
       <div class="demo-upload-list-cover">
         <Icon type="ios-eye-outline" @click.native="handleView(item.url)"></Icon>
         <Icon type="ios-trash-outline" @click.native="handleRemove(item)"></Icon>
       </div>
-    </div>
+    </div> -->
         <!-- <span class="expand-value">{{ row.photoList }}</span>
       </Col>
     </Row> -->
