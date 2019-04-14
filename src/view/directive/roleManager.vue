@@ -122,30 +122,23 @@ export default {
           }
         }
       ],
-      menuList: this.getMockData(),
+      menuList: [],
       targetKeys1: this.getTargetKeys()
     }
   },
   methods: {
     getMockData () {
-      let mockData = []
-      getMenuList().then(res => {
-        let data = res.data.menuList
-        data.forEach(element => {
-          mockData.push(element)
-        })
-        if (res.data.resultCode === 400) {
-          this.$Message.info(res.data.message)
-        }
-      })
-      return mockData
+      return this.menuList
     },
     getTargetKeys () {
-      return this.getMockData()
-        .filter(() => Math.random() * 2 > 1)
-        .map(item => item.key)
+      // return this.getMockData()
+      //   .filter(() => Math.random() * 2 > 1)
+      //   .map(item => item.key)
+      return this.menuList
     },
     render1 (item) {
+      console.log(item.label)
+      console.log(item.label)
       return item.label
     },
     handleChange1 (newTargetKeys, direction, moveKeys) {
@@ -246,6 +239,14 @@ export default {
       } else if (res.data.resultCode === 400) {
         this.$Message.info(res.data.message)
       }
+    })
+    getMenuList().then(res => {
+      let data = res.menuList
+      data.forEach(element => {
+        this.menuList.push(element.name)
+      })
+      console.log('menuList')
+      console.log(this.menuList)
     })
   }
 }

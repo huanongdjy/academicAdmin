@@ -440,21 +440,17 @@ export default {
       })
     },
     onEditorFocus (val) {
-      console.log(this.$refs.myQuillEditor.quill.selection.savedRange.index)
       let range = val.getSelection()
       if (range) {
         if (range.length === 0) {
-          console.log('User cursor is at index', range.index)
           this.length = range.index
         } else {
-          var text = val.getText(range.index, range.length)
-          console.log('User has highlighted: ', text)
+          // var text = val.getText(range.index, range.length)
           this.length = range.index
         }
       } else {
         this.length = val.getText().length
       }
-      console.log(this.length)
     },
     changePage (index) {
       getEssays(10, index, 'newactivity').then(res => {

@@ -37,12 +37,17 @@ export function getMenuList () {
       url: '/getMenuList',
       method: 'post',
       withCredentials: true
+    }).then(res => {
+      resolve(res.data)
+    }).catch(err => {
+      reject(err.data)
     })
-    setTimeout(() => {
-      resolve(res)
-      resolve()
-    }, 2000)
-  }).catch(err => {
-    reject(err)
   })
+  //   setTimeout(() => {
+  //     resolve(res)
+  //     resolve()
+  //   }, 2000)
+  // }).catch(err => {
+  //   reject(err)
+  // })
 }
