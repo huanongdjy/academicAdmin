@@ -42,12 +42,11 @@ export const hasOneOf = (targetarr, arr) => {
   let result = false
   let arr1 = arr.split(',')
   arr1.forEach(item => {
-    targetarr.forEach(_ => {
-      if (_ === item) {
-        result = true
-      }
-    })
+    if (JSON.stringify(targetarr) === item) {
+      result = true
+    }
   })
+  // console.log(result)
   // for (let i=0; i<arr.length; i++) {
   //   for (let j=0; j<targetarr.length; j++) {
   //     arr1[i]

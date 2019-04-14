@@ -57,3 +57,12 @@ export function deleteUser (inputJson) {
     withCredentials: true
   })
 }
+
+export function getUserInfo (token) {
+  return axios({
+    url: '/getUserInfo',
+    data: { token },
+    method: 'post',
+    withCredentials: true
+  })
+}

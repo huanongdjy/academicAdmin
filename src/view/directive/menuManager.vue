@@ -172,7 +172,6 @@ export default {
   created () {
     getMenusWithPage(10, 1).then(res => {
       let data = res.data.page
-      console.log(data)
       if (res.data.resultCode === '200') {
         data.list.forEach(element => {
           this.tableData1.push(element)

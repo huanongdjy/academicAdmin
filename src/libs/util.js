@@ -1,7 +1,7 @@
 import Cookies from 'js-cookie'
 // cookie保存的天数
 import config from '@/config'
-import { forEach, hasOneOf, objEqual } from '@/libs/tools'
+import { hasOneOf, objEqual } from '@/libs/tools'
 // import axios from '@/libs/myaxios'
 const { title, cookieExpires, useI18n } = config
 
@@ -23,7 +23,7 @@ export const hasChild = (item) => {
 
 const showThisMenuEle = (item, access) => {
   if (item.meta && item.meta.access && item.meta.access.length) {
-    if (hasOneOf(item.meta.access, access)) {
+    if (hasOneOf(item.menu_id, access)) {
       return true
     } else return false
   } else return true
@@ -34,7 +34,7 @@ const showThisMenuEle = (item, access) => {
  */
 export const getMenuByRouter = (list, access) => {
   let res = []
-  forEach(list, item => {
+  list.forEach(item => {
     if (!item.meta || (item.meta && !item.meta.hideInMenu)) {
       let obj = {
         icon: (item.meta && item.meta.icon) || '',

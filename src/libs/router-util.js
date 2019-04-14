@@ -5,7 +5,6 @@ import axios from 'axios'
 // import { forEach } from '@/libs/tools'
 import httpurl from '@/config/httpURL'
 // const baseUrl = process.env.NODE_ENV === 'development' ? config.baseUrl.dev : config.baseUrl.pro
-
 // 初始化路由
 export const initRouter = (vm) => {
   if (!getToken()) {
@@ -43,6 +42,7 @@ export const formatMenu = (list) => {
     var obj
     if (item.component === 'Main') {
       obj = {
+        menu_id: item.menu_id,
         path: item.path,
         name: item.name,
         component: Main,
@@ -54,6 +54,7 @@ export const formatMenu = (list) => {
       }
       if (item.title === '学术活动管理') {
         obj = {
+          menu_id: item.menu_id,
           path: item.path,
           name: item.name,
           component: Main,

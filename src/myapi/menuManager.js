@@ -30,3 +30,19 @@ export function searchMenu (inputJson) {
     withCredentials: true
   })
 }
+
+export function getMenuList () {
+  return new Promise((resolve, reject) => {
+    axios({
+      url: '/getMenuList',
+      method: 'post',
+      withCredentials: true
+    })
+    setTimeout(() => {
+      resolve(res)
+      resolve()
+    }, 2000)
+  }).catch(err => {
+    reject(err)
+  })
+}

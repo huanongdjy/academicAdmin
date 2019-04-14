@@ -1,8 +1,9 @@
 import {
   login,
-  logout,
-  getUserInfo
+  logout
+  // getUserInfo
 } from '@/api/user'
+import { getUserInfo } from '@/myapi/userMananger'
 import { setToken, getToken, localSave } from '@/libs/util'
 // import { getAccess } from '@/myapi/main'
 // import routers from '@/router/routers'

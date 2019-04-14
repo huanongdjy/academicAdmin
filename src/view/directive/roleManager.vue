@@ -14,13 +14,19 @@
     <Modal
       v-model="modal"
       :title="title"
-      >
+      width="535px">
       <Form ref="formCustom" :model="formCustom" :rules="ruleCustom" :label-width="80">
         <FormItem label="名称" prop="identity_name">
           <Input type="text" v-model="formCustom.identity_name"></Input>
         </FormItem>
         <FormItem label="权限" prop="description">
-          <Input type="text" v-model="formCustom.access"></Input>
+           <Transfer
+            :data="menuList"
+            :target-keys="targetKeys1"
+            :render-format="render1"
+            @on-change="handleChange1">
+          </Transfer>
+          <!-- <Input type="text" v-model="formCustom.access"></Input> -->
         </FormItem>
       </Form>
       <div slot="footer">
@@ -33,6 +39,7 @@
 
 <script>
 import { getRoles, searchRole, deleteRole, updateRole, addRole } from '@/myapi/roleManager'
+import { getMenuList } from '@/myapi/menuManager'
 export default {
   data () {
     const validateIdentity_name = (rule, value, callback) => {
@@ -114,10 +121,39 @@ export default {
             ])
           }
         }
-      ]
+      ],
+      menuList: this.getMockData(),
+      targetKeys1: this.getTargetKeys()
     }
   },
   methods: {
+    getMockData () {
+      let mockData = []
+      getMenuList().then(res => {
+        let data = res.data.menuList
+        data.forEach(element => {
+          mockData.push(element)
+        })
+        if (res.data.resultCode === 400) {
+          this.$Message.info(res.data.message)
+        }
+      })
+      return mockData
+    },
+    getTargetKeys () {
+      return this.getMockData()
+        .filter(() => Math.random() * 2 > 1)
+        .map(item => item.key)
+    },
+    render1 (item) {
+      return item.label
+    },
+    handleChange1 (newTargetKeys, direction, moveKeys) {
+      console.log(newTargetKeys)
+      console.log(direction)
+      console.log(moveKeys)
+      this.targetKeys1 = newTargetKeys
+    },
     changePage (index) {
       getRoles(10, index).then(res => {
         let data = res.data.page
