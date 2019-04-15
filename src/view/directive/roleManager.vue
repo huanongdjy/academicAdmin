@@ -40,6 +40,7 @@
 <script>
 import { getRoles, searchRole, deleteRole, updateRole, addRole } from '@/myapi/roleManager'
 import { getMenuList } from '@/myapi/menuManager'
+// import { localRead } from '@/libs/util'
 export default {
   data () {
     const validateIdentity_name = (rule, value, callback) => {
@@ -122,29 +123,56 @@ export default {
           }
         }
       ],
-      menuList: [],
+      menuList: this.getMockData(),
       targetKeys1: this.getTargetKeys()
     }
   },
   methods: {
     getMockData () {
-      return this.menuList
+      let menuData = []
+      // let pro = new Promise((resolve, reject) => {
+      getMenuList().then(res => {
+        let data = res.menuList
+        data.forEach(element => {
+          menuData.push({ 'key': element.menu_id, 'label': element.name })
+        })
+        // resolve(menuData)
+      })
+      // .catch(err => {
+      //   reject(err.data)
+      // })
+      // })
+      // pro.then(res => {
+      //   console.log(menuData)
+      //   return menuData
+      // })
+      // console.log(pro)
+      // console.log(accesses.indexOf(menuData[0].key) > -1)
+      return menuData
     },
     getTargetKeys () {
-      // return this.getMockData()
-      //   .filter(() => Math.random() * 2 > 1)
-      //   .map(item => item.key)
-      return this.menuList
+      // let accesses = localRead('access')
+      // // let arr1 = arr.split(',')
+      // console.log(accesses)
+      let redata = this.getMockData()
+      console.log(redata)
+      let redata1 = redata.filter(item, index, arr => {
+        console.log(index)
+        console.log(arr)
+        console.log(item)
+        return true
+      })
+      // redata.map(item => item.key)
+      console.log(redata1)
+      return redata
     },
     render1 (item) {
-      console.log(item.label)
-      console.log(item.label)
       return item.label
     },
     handleChange1 (newTargetKeys, direction, moveKeys) {
-      console.log(newTargetKeys)
-      console.log(direction)
-      console.log(moveKeys)
+      // console.log(newTargetKeys)
+      // console.log(direction)
+      // console.log(moveKeys)
       this.targetKeys1 = newTargetKeys
     },
     changePage (index) {
@@ -239,14 +267,6 @@ export default {
       } else if (res.data.resultCode === 400) {
         this.$Message.info(res.data.message)
       }
-    })
-    getMenuList().then(res => {
-      let data = res.menuList
-      data.forEach(element => {
-        this.menuList.push(element.name)
-      })
-      console.log('menuList')
-      console.log(this.menuList)
     })
   }
 }
