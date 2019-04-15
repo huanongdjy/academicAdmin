@@ -123,54 +123,38 @@ export default {
           }
         }
       ],
-      menuList: this.getMockData(),
-      targetKeys1: this.getTargetKeys()
+      menuList: [],
+      targetKeys1: []
     }
   },
   methods: {
-    getMockData () {
-      let menuData = []
-      // let pro = new Promise((resolve, reject) => {
-      getMenuList().then(res => {
-        let data = res.menuList
-        data.forEach(element => {
-          menuData.push({ 'key': element.menu_id, 'label': element.name })
-        })
-        // resolve(menuData)
-      })
-      // .catch(err => {
-      //   reject(err.data)
-      // })
-      // })
-      // pro.then(res => {
-      //   console.log(menuData)
-      //   return menuData
-      // })
-      // console.log(pro)
-      // console.log(accesses.indexOf(menuData[0].key) > -1)
-      return menuData
-    },
-    getTargetKeys () {
-      // let accesses = localRead('access')
-      // // let arr1 = arr.split(',')
-      // console.log(accesses)
-      let redata = this.getMockData()
-      console.log(redata)
-      let redata1 = redata.filter(item, index, arr => {
-        console.log(index)
-        console.log(arr)
-        console.log(item)
-        return true
-      })
-      // redata.map(item => item.key)
-      console.log(redata1)
-      return redata
-    },
+    // getMockData () {
+    //   let menuData = []
+    // },
+    // getTargetKeys () {
+    //   // let accesses = localRead('access')
+    //   // // let arr1 = arr.split(',')
+    //   // console.log(accesses)
+    //   let redata = this.getMockData()
+    //   let redata1 = [1, 2, 3, 4]
+    //   console.log(menuData.length)
+    //   redata.forEach(item => {
+    //     console.log(item)
+    //   })
+    //   // let redata1 = redata
+    //   //   .map(item => item.key)
+    //   // .filter(function (item) {
+    //   //   return 2 > 2
+    //   // })
+    //   // redata.map(item => item.key)
+    //   console.log(redata1)
+    //   return redata
+    // },
     render1 (item) {
       return item.label
     },
     handleChange1 (newTargetKeys, direction, moveKeys) {
-      // console.log(newTargetKeys)
+      console.log(newTargetKeys)
       // console.log(direction)
       // console.log(moveKeys)
       this.targetKeys1 = newTargetKeys
@@ -191,13 +175,19 @@ export default {
       })
     },
     show (index) {
-      this.modal = true
       let data = this.tableData1[index]
       this.formCustom.identity_name = data.identity_name
       this.formCustom.access = data.access
+      let redata = this.menuList.filter(function (item) {
+        console.log(data.access.indexOf(JSON.stringify(item.key)) < -1)
+        return data.access.indexOf(JSON.stringify(item.key)) > -1
+      })
+        .map(item => item.key)
+      this.targetKeys1 = redata
       this.formCustom.identity_id = data.identity_id
       this.title = '角色信息编辑'
       this.tomethod = 'update'
+      this.modal = true
     },
     remove (index) {
       deleteRole(this.tableData1[index].identity_id).then(res => {
@@ -216,11 +206,14 @@ export default {
       this.$refs['formCustom'].validate(valid => {
         if (valid) {
           if (this.tomethod === 'update') {
+            this.formCustom.access = JSON.stringify(this.targetKeys1)
+            console.log(this.formCustom.access)
             updateRole(this.formCustom).then(res => {
               this.$Message.info(res.data.message)
               this.changePage(this.currentPage)
             })
           } else if (this.tomethod === 'add') {
+            this.formCustom.access = JSON.stringify(this.targetKeys1)
             addRole(this.formCustom).then(res => {
               this.$Message.info(res.data.message)
               this.changePage(this.currentPage)
@@ -267,6 +260,12 @@ export default {
       } else if (res.data.resultCode === 400) {
         this.$Message.info(res.data.message)
       }
+    })
+    getMenuList().then(res => {
+      let data = res.menuList
+      data.forEach(element => {
+        this.menuList.push({ key: element.menu_id, label: element.label })
+      })
     })
   }
 }
