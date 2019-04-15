@@ -128,35 +128,10 @@ export default {
     }
   },
   methods: {
-    // getMockData () {
-    //   let menuData = []
-    // },
-    // getTargetKeys () {
-    //   // let accesses = localRead('access')
-    //   // // let arr1 = arr.split(',')
-    //   // console.log(accesses)
-    //   let redata = this.getMockData()
-    //   let redata1 = [1, 2, 3, 4]
-    //   console.log(menuData.length)
-    //   redata.forEach(item => {
-    //     console.log(item)
-    //   })
-    //   // let redata1 = redata
-    //   //   .map(item => item.key)
-    //   // .filter(function (item) {
-    //   //   return 2 > 2
-    //   // })
-    //   // redata.map(item => item.key)
-    //   console.log(redata1)
-    //   return redata
-    // },
     render1 (item) {
       return item.label
     },
     handleChange1 (newTargetKeys, direction, moveKeys) {
-      console.log(newTargetKeys)
-      // console.log(direction)
-      // console.log(moveKeys)
       this.targetKeys1 = newTargetKeys
     },
     changePage (index) {
@@ -177,10 +152,17 @@ export default {
     show (index) {
       let data = this.tableData1[index]
       this.formCustom.identity_name = data.identity_name
-      this.formCustom.access = data.access
+      // this.formCustom.access = data.access
+      let temaccess = data.access.substring(1, data.access.length - 1).split(',')
       let redata = this.menuList.filter(function (item) {
-        console.log(data.access.indexOf(JSON.stringify(item.key)) < -1)
-        return data.access.indexOf(JSON.stringify(item.key)) > -1
+        let ret = false
+        for (let i = 0; i < temaccess.length; i++) {
+          if (JSON.stringify(item.key) === temaccess[i]) {
+            ret = true
+          }
+        }
+        // return data.access.indexOf(JSON.stringify(item.key)) > -1
+        return ret
       })
         .map(item => item.key)
       this.targetKeys1 = redata
@@ -207,7 +189,6 @@ export default {
         if (valid) {
           if (this.tomethod === 'update') {
             this.formCustom.access = JSON.stringify(this.targetKeys1)
-            console.log(this.formCustom.access)
             updateRole(this.formCustom).then(res => {
               this.$Message.info(res.data.message)
               this.changePage(this.currentPage)
