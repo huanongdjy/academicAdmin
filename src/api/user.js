@@ -1,10 +1,9 @@
 import axios from '@/libs/myaxios'
 
-export const login = ({ username, password, identity }) => {
+export const login = ({ username, password }) => {
   const data = {
     username,
-    password,
-    identity
+    password
   }
   return axios({
     url: '/login',

@@ -12,14 +12,15 @@ export function getColleges (pageSize, currentPage) {
     withCredentials: true
   })
 }
-// export function getAllCollege (inputJson) {
-//   return axios({
-//     url: '/getAllCollege',
-//     method: 'post',
-//     data: inputJson,
-//     withCredentials: true
-//   })
-// }
+
+export function getAllCollege () {
+  return axios({
+    url: '/getAllCollege',
+    method: 'post',
+    // data: inputJson,
+    withCredentials: true
+  })
+}
 
 export function addCollege (inputJson) {
   return axios({

@@ -114,20 +114,6 @@ export default {
     return {
       url: httpurl,
       uploadList: [],
-      // editValue: {
-      //   title: '',
-      //   theme: '',
-      //   summary: '',
-      //   location: '',
-      //   fund: '',
-      //   organizer: '',
-      //   planned_attendance: '',
-      //   type_id: '',
-      //   date: '',
-      //   time: '',
-      //   content: '',
-      //   photoList: []
-      // },
       ruleValid: {
         title: [
           { validator: validateTitle, trigger: 'blur' }

@@ -1,6 +1,13 @@
 <template>
   <div>
     <Row :gutter="20" style="margin-left: 1px; margin-right: 100px;">
+      <div v-if="accessCollege === '0'">
+      <slot>学院范围：</slot><Select v-model="college_model" style="width:100px;margin-left: 10px;margin-right: 10px" transfer-class-name="selectClass" @on-change="changeCollege">
+        <Option v-for="item in collegeList" :value="item.college_id" :key="item.college_id" >{{ item.college_name }}</Option>
+      </Select>
+      <br/>
+      <br/>
+      </div>
       <slot>数据分析时间范围：</slot><Select v-model="model" style="width:100px;margin-left: 10px;margin-right: 10px" transfer-class-name="selectClass" @on-change="changeoption">
         <Option v-for="item in list" :value="item.value" :key="item.value" >{{ item.label }}</Option>
       </Select>
@@ -19,12 +26,12 @@
     <Row :gutter="20" style="margin-top: 10px;">
       <i-col :md="24" :lg="8" style="margin-bottom: 20px;">
         <Card shadow>
-          <chart-attendance-pie style="height: 300px;" :value="pieData" text="学术活动"></chart-attendance-pie>
+          <chart-attendance-pie style="height: 300px;" :college_id="college_id" :value="pieData" text="学术活动"></chart-attendance-pie>
         </Card>
       </i-col>
       <i-col :md="24" :lg="8" style="margin-bottom: 20px;">
         <Card shadow>
-          <achievement-pie style="height: 300px;" :value="achievementPieData" text="成果"></achievement-pie>
+          <achievement-pie style="height: 300px;" :college_id="college_id" :value="achievementPieData" text="成果"></achievement-pie>
         </Card>
       </i-col>
     </Row>
@@ -40,6 +47,7 @@
 import InforCard from '_c/info-card'
 import CountTo from '_c/count-to'
 import { ChartAttendancePie, ChartBar, achievementPie } from '_c/charts'
+import { getAllCollege } from '@/myapi/collegeManager'
 // import lineChart from './lineChart.vue'
 import { getInforCardData, getEssayPieData, getAchievementPieData } from '@/myapi/analysis'
 export default {
@@ -55,6 +63,7 @@ export default {
   data () {
     return {
       model: '今日之内',
+      college_model: '0',
       list: [
         {
           value: '今日之内',
@@ -69,6 +78,12 @@ export default {
           label: '一个月之内'
         }
       ],
+      accessCollege: this.$store.getters.getCollege_id,
+      collegeList: [{
+        college_name: '全部学院',
+        college_id: '0'
+      }],
+      college_id: this.$store.getters.getCollege_id,
       begTime: '12',
       endTime: '',
       inforCardData: [
@@ -113,6 +128,12 @@ export default {
         this.endTime = today
       }
     },
+    changeCollege (value) {
+      this.college_id = value
+      this._getInforCardData(this.begTime, this.endTime)
+      this._getAttendanceNumPieData(this.begTime, this.endTime)
+      this._getAchievementPieData(this.begTime, this.endTime)
+    },
     changeDate () {
       if (this.endTime > this.begTime) {
         this._getInforCardData(this.begTime, this.endTime)
@@ -123,7 +144,7 @@ export default {
       }
     },
     _getInforCardData (begTime, endTime) {
-      getInforCardData(begTime, endTime).then(res => {
+      getInforCardData(this.college_id, begTime, endTime).then(res => {
         let data = res.data
         if (data.resultCode === 200) {
           let i = 0
@@ -135,7 +156,7 @@ export default {
       })
     },
     _getAttendanceNumPieData (begTime, endTime) {
-      getEssayPieData(begTime, endTime).then(res => {
+      getEssayPieData(this.college_id, begTime, endTime).then(res => {
         let data = res.data
         this.pieData.splice(0, this.pieData.length)
         data.forEach(element => {
@@ -144,7 +165,7 @@ export default {
       })
     },
     _getAchievementPieData (begTime, endTime) {
-      getAchievementPieData(begTime, endTime).then(res => {
+      getAchievementPieData(this.college_id, begTime, endTime).then(res => {
         let data = res.data
         this.achievementPieData.splice(0, this.achievementPieData.length)
         data.forEach(element => {
@@ -203,9 +224,9 @@ export default {
     }
   },
   created () {
-    let thedate = this.getToday()
-    let aftdate = this.getAfterDay()
-    getInforCardData(thedate, aftdate).then(res => {
+    this.begTime = this.getToday()
+    this.endTime = this.getAfterDay()
+    getInforCardData(this.college_id, this.begTime, this.endTime).then(res => {
       let data = res.data
       if (data.resultCode === 200) {
         let i = 0
@@ -215,6 +236,13 @@ export default {
         })
       }
     })
+    getAllCollege().then(res => {
+      let data = res.data
+      data.collegeList.forEach(item => {
+        this.collegeList.push(item)
+      })
+    })
+    console.log(this.$store.getters.getCollege_id === '0')
     // getPieData(thedate, aftdate).then(res => {
     //   let data = res.data
     //   data.forEach(item => {

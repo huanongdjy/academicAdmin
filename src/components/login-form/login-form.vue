@@ -14,12 +14,12 @@
         </span>
       </Input>
     </Form-Item>
-     <Form-item prop="gender">
+     <!-- <Form-item prop="gender">
       <Radio-group v-model="form.identity">
         <Radio label="admin">管理员</Radio>
         <Radio label="sysadmin">系统管理员</Radio>
       </Radio-group>
-    </Form-item>
+    </Form-item> -->
     <Form-Item>
       <Button @click="handleSubmit" type="primary" long>登录</Button>
     </Form-Item>
@@ -58,8 +58,7 @@ export default {
     return {
       form: {
         username: '',
-        password: '',
-        identity: ''
+        password: ''
       }
     }
   },
@@ -67,8 +66,7 @@ export default {
     rules () {
       return {
         username: this.userNameRules,
-        password: this.passwordRules,
-        identity: this.identityRules
+        password: this.passwordRules
       }
     }
   },
@@ -78,8 +76,7 @@ export default {
         if (valid) {
           this.$emit('on-success-valid', {
             username: this.form.username,
-            password: this.form.password,
-            identity: this.form.identity
+            password: this.form.password
           })
         }
       })

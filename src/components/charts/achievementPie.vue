@@ -13,7 +13,8 @@ export default {
   props: {
     value: Array,
     text: String,
-    subtext: String
+    subtext: String,
+    college_id: Number
   },
   data () {
     return {
@@ -93,7 +94,7 @@ export default {
       // let option = {}
       let thedate = this.getToday()
       let aftdate = this.getAfterDay()
-      getAchievementPieData(thedate, aftdate).then(res => {
+      getAchievementPieData(this.college_id, thedate, aftdate).then(res => {
         setTimeout(() => {
           let data = res.data
           this.value.splice(0, this.value.length)

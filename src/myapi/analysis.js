@@ -1,7 +1,8 @@
 import axios from '@/libs/myaxios'
 
-export function getInforCardData (begTime, endTime) {
+export function getInforCardData (college_id, begTime, endTime) {
   var inputJson = {
+    college_id,
     begTime,
     endTime
   }
@@ -13,8 +14,9 @@ export function getInforCardData (begTime, endTime) {
   })
 }
 
-export function getEssayPieData (begTime, endTime) {
+export function getEssayPieData (college_id, begTime, endTime) {
   var inputJson = {
+    college_id,
     begTime,
     endTime
   }
@@ -26,8 +28,9 @@ export function getEssayPieData (begTime, endTime) {
   })
 }
 
-export function getAchievementPieData (begTime, endTime) {
+export function getAchievementPieData (college_id, begTime, endTime) {
   var inputJson = {
+    college_id,
     begTime,
     endTime
   }

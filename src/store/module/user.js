@@ -4,7 +4,7 @@ import {
   // getUserInfo
 } from '@/api/user'
 import { getUserInfo } from '@/myapi/userMananger'
-import { setToken, getToken, localSave } from '@/libs/util'
+import { setToken, getToken, localSave, localRead } from '@/libs/util'
 // import { getAccess } from '@/myapi/main'
 // import routers from '@/router/routers'
 
@@ -16,6 +16,7 @@ export default {
     token: getToken(),
     access: [],
     hasGetInfo: false,
+    college_id: '',
     meta: []
   },
   mutations: {
@@ -41,15 +42,21 @@ export default {
     },
     setMeta (state, memus) {
       state.meta = memus
+    },
+    setCollege_id (state, college_id) {
+      localSave('college_id', college_id)
     }
   },
   getters: {
     getUsername: state => state.username,
-    getAccess: state => state.access
+    getAccess: state => state.access,
+    getCollege_id (state) {
+      return localRead('college_id')
+    }
   },
   actions: {
     // 登录
-    handleLogin ({ commit }, { username, password, identity }) {
+    handleLogin ({ commit }, { username, password }) {
       // getAccess().then(res => {
       //   commit('setMeta', res.data.memus)
       // })
@@ -57,8 +64,7 @@ export default {
       return new Promise((resolve, reject) => {
         login({
           username,
-          password,
-          identity
+          password
         }).then(res => {
           const data = res.data
           if (data.resultCode === 200) {
@@ -70,6 +76,7 @@ export default {
             localSave('access', [data.identity.access])
             commit('setAccess', [data.identity.access])
             commit('setHasGetInfo', true)
+            commit('setCollege_id', data.college_id)
             setTimeout(() => {
               resolve(res)
               resolve()
