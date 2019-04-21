@@ -69,6 +69,7 @@ export default {
           const data = res.data
           if (data.resultCode === 200) {
             commit('setToken', res.data.token)
+            localSave('token', res.data.token)
             const data = res.data.user
             commit('setAvator', data.avator)
             commit('setUserName', data.username)
@@ -119,6 +120,7 @@ export default {
             commit('setUserId', data.userId)
             commit('setAccess', [data.access])
             commit('setHasGetInfo', true)
+            localSave('token', '')
             resolve(data)
           // })
           }).catch(err => {

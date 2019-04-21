@@ -5,11 +5,17 @@ export function getMenusWithPage (pageSize, currentPage) {
     pageSize,
     currentPage
   }
-  return axios({
-    url: '/getMenusWithPage',
-    method: 'post',
-    data: inputJson,
-    withCredentials: true
+  return new Promise((resolve, reject) => {
+    axios({
+      url: '/getMenusWithPage',
+      method: 'post',
+      data: inputJson,
+      withCredentials: true
+    }).then(res => {
+      resolve(res.data)
+    }).catch(err => {
+      reject(err.data)
+    })
   })
 }
 

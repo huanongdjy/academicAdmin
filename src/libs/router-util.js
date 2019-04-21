@@ -1,19 +1,30 @@
-import { getToken, localSave, localRead } from '@/libs/util'
+import { localSave, localRead } from '@/libs/util'// getToken
 import Main from '@/components/main'
-import axios from 'axios'
+// import axios from 'axios'
+import { getMenuList } from '@/myapi/menuManager'
 // import config from '@/config'
 // import { forEach } from '@/libs/tools'
-import httpurl from '@/config/httpURL'
+// import httpurl from '@/config/httpURL'
 // const baseUrl = process.env.NODE_ENV === 'development' ? config.baseUrl.dev : config.baseUrl.pro
 // 初始化路由
 export const initRouter = (vm) => {
-  if (!getToken()) {
-    return
-  }
+  // if (!getToken()) {
+  //   return
+  // }
   let list = []
   // 模拟异步请求，改为您实际的后端请求路径
-  axios.post(httpurl + 'getMenuList').then(res => {
-    var menuData = res.data.menuList
+  // axios.post(httpurl + 'getMenuList').then(res => {
+  //   var menuData = res.data.menuList
+  //   // 这是后端回传给前端的数据，如上面所说的
+  //   localSave('route', JSON.stringify(menuData))
+  //   // 格式化菜单
+  //   list = formatMenu(menuData)
+  //   // 刷新界面菜单
+  //   vm.$store.commit('updateMenuList', list)
+  //   return list
+  // })
+  getMenuList().then(res => {
+    var menuData = res.menuList
     // 这是后端回传给前端的数据，如上面所说的
     localSave('route', JSON.stringify(menuData))
     // 格式化菜单

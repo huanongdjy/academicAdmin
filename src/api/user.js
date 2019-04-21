@@ -5,10 +5,16 @@ export const login = ({ username, password }) => {
     username,
     password
   }
-  return axios({
-    url: '/login',
-    data,
-    method: 'post'
+  return new Promise((resolve, reject) => {
+    axios({
+      url: '/login',
+      data,
+      method: 'post'
+    }).then(res => {
+      resolve(res)
+    }).catch(err => {
+      reject(err)
+    })
   })
 }
 

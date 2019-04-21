@@ -242,7 +242,6 @@ export default {
         this.collegeList.push(item)
       })
     })
-    console.log(this.$store.getters.getCollege_id === '0')
     // getPieData(thedate, aftdate).then(res => {
     //   let data = res.data
     //   data.forEach(item => {

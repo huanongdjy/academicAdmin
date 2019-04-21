@@ -33,8 +33,8 @@ export default {
       'handleLogin',
       'getUserInfo'
     ]),
-    handleSubmit ({ username, password, identity }) {
-      this.handleLogin({ username, password, identity }).then(res => {
+    handleSubmit ({ username, password }) {
+      this.handleLogin({ username, password }).then(res => {
         let data = res.data
         if (data.resultCode === 200) {
           this.$router.push({
