@@ -29,7 +29,7 @@ export const login = ({ username, password }) => {
 // }
 
 export const logout = () => {
-  return axios.request({
+  return axios({
     url: '/logout',
     method: 'post'
   })

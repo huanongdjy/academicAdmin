@@ -81,7 +81,7 @@ export default {
       accessCollege: this.$store.getters.getCollege_id,
       collegeList: [{
         college_name: '全部学院',
-        college_id: '0'
+        college_id: 0
       }],
       college_id: this.$store.getters.getCollege_id,
       begTime: '12',

@@ -13,8 +13,6 @@ export const setToken = (token) => {
 
 export const getToken = () => {
   const token = Cookies.get(TOKEN_KEY)
-  console.log('token')
-  console.log(token)
   if (!(token === '')) return token
   else return false
 }

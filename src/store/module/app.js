@@ -1,7 +1,7 @@
 import {
   getBreadCrumbList,
   setTagNavListInLocalstorage,
-  getMenuByRouter,
+  // getMenuByRouter,
   getTagNavListFromLocalstorage,
   getHomeRoute,
   getNextRoute,
@@ -13,7 +13,7 @@ import {
 } from '@/libs/util'
 import router from '@/router'
 import routers from '@/router/routers'
-import { loadMenu } from '@/libs/router-util'
+// import { loadMenu } from '@/libs/router-util'
 import config from '@/config'
 // import user from './user'
 const { homeName } = config
@@ -36,7 +36,7 @@ export default {
     hasReadErrorPage: false
   },
   getters: {
-    menuList: (state, getters, rootState) => getMenuByRouter(loadMenu(), localRead('access')),
+    // menuList: (state, getters, rootState) => getMenuByRouter(loadMenu(), localRead('access')),
     errorCount: state => state.errorList.length
   },
   mutations: {

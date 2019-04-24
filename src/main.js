@@ -3,7 +3,7 @@
 import Vue from 'vue'
 import App from './App'
 import router from './router'
-import { initRouter } from '@/libs/router-util'
+// import { initRouter } from '@/libs/router-util'
 import store from './store'
 import iView from 'iview'
 import i18n from '@/locale'
@@ -45,9 +45,9 @@ Vue.directive('clickOutside', clickOutside)
 new Vue({
   el: '#app',
   router,
-  mounted() {
-    initRouter(this);
-  },
+  // mounted() {
+  //   initRouter(this);
+  // },
   i18n,
   store,
   render: h => h(App)

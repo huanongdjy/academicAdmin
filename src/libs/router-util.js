@@ -1,4 +1,4 @@
-import { localSave, localRead } from '@/libs/util'// getToken
+import { localSave } from '@/libs/util'// getToken
 import Main from '@/components/main'
 // import axios from 'axios'
 import { getMenuList } from '@/myapi/menuManager'
@@ -37,13 +37,19 @@ export const initRouter = (vm) => {
 
 // 加载菜单，在创建路由时使用
 export const loadMenu = () => {
-  let list = []
-  let data = localRead('route')
-  if (!data) {
+  // let list = []
+  // let data = localRead('route')
+  // if (!data) {
+  //   return list
+  // }
+  // list = formatMenu(JSON.parse(data))
+  // return list
+  getMenuList().then(res => {
+    var menuData = res.menuList
+    list = formatMenu(menuData)
+    // 刷新界面菜单
     return list
-  }
-  list = formatMenu(JSON.parse(data))
-  return list
+  })
 }
 
 // 格式化菜单

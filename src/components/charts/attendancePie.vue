@@ -14,7 +14,7 @@ export default {
     value: Array,
     text: String,
     subtext: String,
-    college_id: Number
+    college_id: String
   },
   data () {
     return {

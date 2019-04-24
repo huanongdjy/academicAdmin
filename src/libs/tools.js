@@ -40,7 +40,7 @@ export const getUnion = (arr1, arr2) => {
  */
 export const hasOneOf = (targetarr, arr) => {
   let result = false
-  let arr1 = arr.substring(0, arr.length - 1).split(',')
+  let arr1 = arr.substring(1, arr.length - 1).split(',')
   arr1.forEach(item => {
     if (JSON.stringify(targetarr) === item) {
       result = true

@@ -44,7 +44,9 @@ import Fullscreen from './components/fullscreen'
 // import Language from './components/language'
 // import ErrorStore from './components/error-store'
 import { mapMutations, mapActions, mapGetters } from 'vuex'
-import { getNewTagList, routeEqual } from '@/libs/util'
+import { getNewTagList, routeEqual, getMenuByRouter, localRead } from '@/libs/util'
+import { getMenuList } from '@/myapi/menuManager'
+import { formatMenu } from '@/libs/router-util'
 import routers from '@/router/routers'
 import minLogo from '@/assets/images/logo-min.jpg'
 import maxLogo from '@/assets/images/logo.jpg'
@@ -65,7 +67,8 @@ export default {
       minLogo,
       maxLogo,
       isFullscreen: false,
-      menus: this.$store.getters.menuList
+      // menus: this.$store.getters.menuList
+      menus: []
     }
   },
   computed: {
@@ -85,9 +88,9 @@ export default {
       const list = ['ParentView', ...this.tagNavList.length ? this.tagNavList.filter(item => !(item.meta && item.meta.notCache)).map(item => item.name) : []]
       return list
     },
-    menuList () {
-      return this.$store.getters.menuList// 路由列表显示
-    },
+    // menuList () {
+    //   return this.$store.getters.menuList// 路由列表显示
+    // },
     local () {
       return this.$store.state.app.local
     },
@@ -178,21 +181,29 @@ export default {
     },
     routers (newRoute) {
       this.init()
-    },
-    menuList (val) {
-      this.menus = val
     }
+    // menuList (val) {
+    //   this.menus = val
+    // }
   },
   mounted () {
     /**
      * @description 初始化设置面包屑导航和标签导航
      */
     this.init()
-    // 获取未读消息条数
-    // this.getUnreadMessageCount()
+  },
+  created () {
+    getMenuList().then(res => {
+      var menuData = res.menuList
+      let list = formatMenu(menuData)
+      // 刷新界面菜单
+      let accesses = localRead('access')
+      let reslist = getMenuByRouter(list, accesses)
+      this.menus = []
+      reslist.forEach(item => {
+        this.menus.push(item)
+      })
+    })
   }
-  // created () {
-  //   console.log(this.$store.getters.menuList)
-  // }
 }
 </script>
