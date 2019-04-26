@@ -47,3 +47,12 @@ export function searchRole (inputJson) {
     withCredentials: true
   })
 }
+
+export function getAddUserIdentity () {
+  return axios({
+    url: '/getAddUserIdentity',
+    method: 'post',
+    // data: inputJson,
+    withCredentials: true
+  })
+}

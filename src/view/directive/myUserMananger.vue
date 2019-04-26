@@ -30,8 +30,7 @@
         </FormItem> -->
         <FormItem label="角色">
           <select v-model="formCustom.identity">
-            <option value="1">管理员</option>
-            <option value="2">系统管理员</option>
+            <option :value="item.identity_id" v-for="item in identitys" :key="item.identity_id">{{item.identity_name}}</option>
           </select>
         </FormItem>
         <FormItem label="邮箱" prop="mailbox">
@@ -52,6 +51,7 @@
 
 <script>
 import { getUsers, updateUser, addUser, searchUser, deleteUser } from '@/myapi/userMananger'
+import { getAddUserIdentity } from '@/myapi/roleManager'
 export default {
   data () {
     const validatePass = (rule, value, callback) => {
@@ -108,6 +108,7 @@ export default {
         identity: 2,
         mailbox: ''
       },
+      identitys: [],
       title: '',
       tomethod: '',
       searchValue: '',
@@ -243,7 +244,8 @@ export default {
             })
           } else if (this.tomethod === 'add') {
             addUser(this.formCustom).then(res => {
-              this.$Message.info(res.data.message)
+              console.log(res)
+              // this.$Message.info(res.data.message)
             })
           }
           this.modal = false
@@ -284,6 +286,16 @@ export default {
         })
         this.total = data.total
         this.currentPage = data.pageNum
+      } else if (res.data.resultCode === 400) {
+        this.$Message.info(res.data.message)
+      }
+    })
+    getAddUserIdentity().then(res => {
+      let data = res.data
+      if (res.data.resultCode === 200) {
+        data.identities.forEach(element => {
+          this.identitys.push(element)
+        })
       } else if (res.data.resultCode === 400) {
         this.$Message.info(res.data.message)
       }

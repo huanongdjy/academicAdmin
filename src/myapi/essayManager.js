@@ -1,4 +1,5 @@
 import axios from '@/libs/myaxios'
+import { localRead } from '@/libs/util'// getToken
 
 export function addEssay (inputJson) {
   return axios({
@@ -10,10 +11,12 @@ export function addEssay (inputJson) {
 }
 
 export function getEssays (pageSize, currentPage, type) {
+  let college_id = localRead('college_id')
   var inputJson = {
     pageSize,
     currentPage,
-    type
+    type,
+    college_id
   }
   return axios({
     url: '/getInformationWithPage',

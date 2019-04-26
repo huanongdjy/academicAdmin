@@ -99,6 +99,8 @@ export default {
           commit('setAccess', [])
           localSave('access', [])
           localSave('route', [])
+          localSave('college_id', '')
+          localStorage.tagNaveList = ''
           resolve()
         }).catch(err => {
           reject(err)
@@ -120,7 +122,7 @@ export default {
             commit('setUserId', data.userId)
             commit('setAccess', [data.access])
             commit('setHasGetInfo', true)
-            localSave('token', '')
+            // localSave('token', '')
             resolve(data)
           // })
           }).catch(err => {

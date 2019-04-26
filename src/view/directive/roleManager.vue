@@ -23,6 +23,7 @@
            <Transfer
             :data="menuList"
             :target-keys="targetKeys1"
+            :titles="titles"
             :render-format="render1"
             @on-change="handleChange1">
           </Transfer>
@@ -62,6 +63,7 @@ export default {
         identity_name: '',
         access: ''
       },
+      titles: ['未拥有菜单权限', '已拥有菜单权限'],
       title: '',
       tomethod: '',
       searchValue: '',

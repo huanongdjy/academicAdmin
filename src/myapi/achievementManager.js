@@ -1,10 +1,13 @@
 import axios from '@/libs/myaxios'
+import { localRead } from '@/libs/util'// getToken
 
 export function getAchievement (pageSize, currentPage, type) {
+  let college_id = localRead('college_id')
   var inputJson = {
     pageSize,
     currentPage,
-    type
+    type,
+    college_id
   }
   return axios({
     url: '/getInformationWithPage',
